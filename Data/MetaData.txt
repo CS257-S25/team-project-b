@@ -1,8 +1,3 @@
-# Title
-
-# Dataset(s) summary
-
-# Dataset(s) Metadata
 Copyright	
 Attribution 4.0 International (CC BY 4.0)
 
@@ -41,5 +36,3 @@ The mention of specific companies or of certain manufacturers’ products does n
 All reasonable precautions have been taken by WHO to verify the accuracy of the Datasets. However, the Datasets are being provided without warranty of any kind, either expressed or implied. You will be solely responsible for your use of the Datasets. In no event shall WHO be liable for any damages arising from such use.
 
 For full disclaimers, terms of use and your indemnification of WHO, please visit Terms and Conditions.
-
-# Potential User Interactions
