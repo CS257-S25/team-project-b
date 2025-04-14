@@ -42,4 +42,4 @@ A user can select a time period to find out which country had the highest number
 
 - A user can specify a date range.
 - The system identifies the country with the highest number of cases and deaths within that range.
-- The user receives clear numerical results and country names.
+- The user receives clear numerical results and country names. 
