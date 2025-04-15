@@ -5,6 +5,8 @@ Anthony: One of my biggest strengths is my adaptability. If necessary, I would h
 
 Daniel: One of my biggest strengths is dependability. If I am given a task to complete by a certain date I will make sure it gets done. When we need something to be done either for this project or something else I will make sure it gets completed. I believe this will help our team stay on track with our goals. 
 
+Fenan: One of my strengths is a good time management. I'm also flexible and willing to step in to fill any gaps as needed.
+
 Owen: The stengths I bring to the table are my planning and debugging skills. I will help make sure the team is on track and know when delliervables and smaller tasks are going to get done. In addition, I will proof read code/text to make sure it flows smoothly and catch any errors.
 # Rules
 We believe that our work must embody each member's individual effort and ideas. 
