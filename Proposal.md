@@ -23,19 +23,19 @@ World Health Organization 2023 data.who.int, WHO Coronavirus (COVID-19) dashboar
 # Potential User Interactions
 
 ### User Story 1
-A user can compare COVID-19 cases and deaths between two countries over a selected time period so that they can analyze which country was more affected during that period.
+A user can compare COVID-19 cases and deaths between two  or more (up to 5) countries during a partiuclar week so that they can analyze which country was more affected during that period.
 
-- A user can select two countries from a list.
-- A user can choose a start and end date. (the system should be able to sort the dates in order)
-- The system provides a summary of total cases and deaths for each country during the selected time range.
-- The user can clearly see the differences in case and death counts.
+- A user can select 2+ countries from a list.
+- A user can choose a week. 
+- The system provides a summary of total cases and deaths for each country during the selected week.
+- The user can clearly see the differences in case and death counts in a visual representation.
 
 ### User Story 2
-A user can view COVID-19 case and death statistics for a specific country so that they can track the country's experience throughout the pandemic.
+A user can view COVID-19 case and death statistics over multiple weeks for a specific country so that they can track the country's experience throughout the pandemic. Up to 5 weeks can be selected (able to be ajusted).
 
 - A user can select a country from a list.
-- The system displays weekly totals of cases and deaths for that country.
-- The user can view cumulative statistics across the dataset.
+- The system displays the weekly totals of cases and deaths for that country on the weeks selected.
+- The user can view cumulative statistics across the dataset in a visual representation.
 
 ### User Story 3
 A user can select a time period to find out which country had the highest number of COVID-19 cases and deaths during that time.
