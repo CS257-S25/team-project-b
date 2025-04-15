@@ -8,6 +8,9 @@ Daniel: One of my biggest strengths is dependability. If I am given a task to co
 Fenan: One of my strengths is a good time management. I'm also flexible and willing to step in to fill any gaps as needed.
 
 Owen: The stengths I bring to the table are my planning and debugging skills. I will help make sure the team is on track and know when delliervables and smaller tasks are going to get done. In addition, I will proof read code/text to make sure it flows smoothly and catch any errors.
+
+# Capatilizing on Strengths
+Assigning Roles for our team makes sense as Daniel and Anthony will be able to get work out. The gaps in the work Fenan can sub-in to help out in any task. Finally, Owen can double-check/debug code and other tasks along with helping with the start. Owen will also assist in planning and of course doing tasks for the first time where needed.
 # Rules
 We believe that our work must embody each member's individual effort and ideas. 
 #### Meetings
