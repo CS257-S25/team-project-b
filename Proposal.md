@@ -28,14 +28,14 @@ A user can compare COVID-19 cases and deaths between two  or more (up to 5) coun
 - A user can select 2+ countries from a list.
 - A user can choose a week. 
 - The system provides a summary of total cases and deaths for each country during the selected week.
-- The user can clearly see the differences in case and death counts in a visual representation. (data is plotted for a test).
+- The user can clearly see the differences in case and death counts in a visual representation. (data is not plotted for a test).
 
 ### User Story 2
 A user can view COVID-19 case and death statistics over multiple weeks for a specific country so that they can track the country's experience throughout the pandemic. Up to 5 weeks can be selected (able to be ajusted).
 
 - A user can select a country from a list.
 - The system displays the weekly totals of cases and deaths for that country on the weeks selected.
-- The user can view cumulative statistics across the dataset in a visual representation. (data is plotted for a test).
+- The user can view cumulative statistics across the dataset in a visual representation. (data is not plotted for a test).
 
 ### User Story 3
 A user can select a time period to find out which country had the highest number of COVID-19 cases and deaths during that time.
