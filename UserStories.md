@@ -23,4 +23,4 @@ The program can display COVID-19 case and death statistics over multiple weeks f
 - The system displays the **weekly totals** of new cases and deaths for the country.
 
 ## Acceptance Tests
-For this project, are Acceptance Tests can be found under our "Tests" folder in a file titled "cl.py"
+For this project, are Acceptance Tests can be found under our "Tests" folder in a file titled "test_cl.py"
