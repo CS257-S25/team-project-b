@@ -4,14 +4,14 @@ This tool allows the user to explore global COVID-19 data through the:
 This interface will support 3 core features, each providing insight
 into case and death counts across the globe. 
 
-# Team Members:
+# Team Members 👥:
 Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez
 
-# User Stories:
+# User Stories📚:
 
-## User Story #1 "Compare"
+## User Story #1 📖 "Compare"
 
-Allows a user to compare total COVID-19 cases and deaths for up to five countries during a specified week 
+Allows a user to compare total  COVID-19 cases and deaths for up to five countries during a specified week 
 
 #### Usage:
 To run this scenario, the user would input:
@@ -22,7 +22,7 @@ Canada: 21,675 cases, 390 deaths
 France: 126,417 cases, 2,405 deaths 
 Brazil: 316,222 cases, 7,822 deaths
 
-## User Story #2 "Change"
+## User Story #2 📖 "Change"
 
 Allows a user to display the total weekly COVID-19 cases and deaths for a chosen country (Maximum of five)
 
@@ -35,5 +35,5 @@ Week of 2021-03-01: 103,098 cases, 1,258 deaths
 Week of 2021-03-08: 117,972 cases, 1,289 deaths 
 Week of 2021-03-15: 203,540 cases, 1,674 deaths
 
-## Acceptance Tests
+## Acceptance Tests ✅
 For this project, are Acceptance Tests can be found under our "Tests" folder in a file titled "cl.py"
