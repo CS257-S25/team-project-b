@@ -1,7 +1,7 @@
 This file outlines our three core user stories and interactions supported by the COVID-19 Statistics CLI Tool.
 
 # User Stories
-User Story 1: Compare Countries During a Specific Week
+## 📊 User Story 1: Compare Countries During a Specific Week
 
 **As a user**,  
 The program can compare COVID-19 cases and deaths between two or more (up to 5) countries during a particular week  
