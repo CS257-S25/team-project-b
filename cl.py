@@ -5,7 +5,7 @@ def print_usage():
     print("Usage:")
     print("  python cl.py compare country1,country2 beginning_date ending_date")
     print("  python cl.py stats country beginning_date ending_date")
-    print("  python cl.py highest beginning_date ending_date")
+    '''print("  python cl.py highest beginning_date ending_date")'''
 
 def main():
     args = sys.argv[1:]
@@ -14,12 +14,22 @@ def main():
         return
 
     command = args[0]
+    
 
-    if command == "compare" and len(args) == 4:
+    if command == "compare" and len(args) == 3:
+        if not (2 <= len(args[1].split(",")) <= 5):
+            print_usage()
+            return
         countries = args[1].split(",")
-        beginning_date = args[2]
-        ending_date = args[3]
-        covid_stats.compare(countries, beginning_date, ending_date)
+        '''
+        Country1 = countries[0]
+        country2 = countries[1]
+        country3 = countries[2] if len(countries) > 2 else None
+        country4 = countries[3] if len(countries) > 3 else None
+        country5 = countries[4] if len(countries) > 4 else None
+        '''
+        week = args[2]
+        covid_stats.compare(countries, week)
 
     elif command == "stats" and len(args) == 4:
         country = args[1]
