@@ -34,14 +34,3 @@ The output would look something like:
 Week of 2021-03-01: 103,098 cases, 1,258 deaths FAKE 
 Week of 2021-03-08: 117,972 cases, 1,289 deaths FAKE 
 Week of 2021-03-15: 203,540 cases, 1,674 deaths FAKE
-
-## User Story #3 "Highest"
-
-Allows a user to select a day and view the country with the highest number of new cases on that given date. 
-
-##### Usage: 
-To run this scenario, the user would input:
-python3 cl.py --highest "2021-02-15"
-
-The output would look something like:
-Country with the highest cases in 2021-02-15: USA with 67,114 cases FAKE 
