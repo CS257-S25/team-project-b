@@ -5,7 +5,7 @@ This interface will support 3 core features, each providing insight
 into case and death counts across the globe. 
 
 # Team Members:
-Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez-Vazquez
+Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez
 
 # User Stories:
 
