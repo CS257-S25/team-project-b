@@ -35,5 +35,5 @@ Week of 2021-03-01: 103,098 cases, 1,258 deaths
 Week of 2021-03-08: 117,972 cases, 1,289 deaths 
 Week of 2021-03-15: 203,540 cases, 1,674 deaths
 
-### Acceptance Tests
+## Acceptance Tests
 For this project, are Acceptance Tests can be found under our "Tests" folder in a file titled "cl.py"
