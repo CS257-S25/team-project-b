@@ -21,3 +21,6 @@ The program can display COVID-19 case and death statistics over multiple weeks f
 - The user can select **one country** from a list.
 - The user can choose up to **5 weeks** (each represented by a date).
 - The system displays the **weekly totals** of new cases and deaths for the country.
+
+## Acceptance Tests
+For this project, are Acceptance Tests can be found under our "Tests" folder in a file titled "cl.py"
