@@ -48,5 +48,4 @@ def main():
         print_usage()
 
 if __name__ == "__main__":
-    csv_reader = CSVReader()
-    csv_reader.read_csv()
+    main()
