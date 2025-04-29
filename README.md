@@ -9,7 +9,7 @@ Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez
 
 # User Stories📚:
 
-## User Story #1 📖 "Compare"
+## User Story #1 📖 "compare"
 
 Allows a user to compare total  COVID-19 cases and deaths for up to five countries during a specified week 
 
@@ -22,7 +22,7 @@ Canada: 21,675 cases, 390 deaths
 France: 126,417 cases, 2,405 deaths 
 Brazil: 316,222 cases, 7,822 deaths
 
-## User Story #2 📖 "Change"
+## User Story #2 📖 "stats"
 
 Allows a user to display the total weekly COVID-19 cases and deaths for a chosen country (Maximum of five)
 
@@ -42,13 +42,13 @@ For this project, our Acceptance Tests can be found under the "Tests" folder in 
 Acceptance tests are designed to ensure that the tool meets the requirements outlined in the user stories. These tests simulate real-world usage scenarios to verify that the tool behaves as expected.
 
 ### How They Relate to User Stories
-1. **User Story #1: Compare**
+1. **User Story #1: compare**
    - The `test_cl.py` file contains tests for the `--compare` feature.
    - These tests verify that the tool correctly compares COVID-19 statistics for up to five countries during a specified week.
    - Example: The test ensures that running the command `python3 cl.py --compare "Canada" "France" "Brazil" --week "2021-02-15"` produces the expected output format and data.
 
-2. **User Story #2: Stats**
-   - The `test_cl.py` file also includes tests for the `--change` feature.
+2. **User Story #2: stats**
+   - The `test_cl.py` file also includes tests for the `--stats` feature.
    - These tests validate that the tool displays weekly COVID-19 cases and deaths for a chosen country over multiple weeks.
    - Example: The test ensures that running the command `python3 cl.py --country "India" --weeks "2021-03-01" "2021-03-08" "2021-03-15"` produces the correct weekly statistics.
 
