@@ -1,6 +1,7 @@
 import sys
 from ProductionCode import covid_stats
 
+
 def print_usage():
     print("""Usage:\n
           python cl.py compare country1,country2 beginning_date ending_date\n
@@ -17,7 +18,6 @@ def main():
         return
 
     command = args[0]
-    
 
     if command == "compare" and len(args) == 3:
         if not (2 <= len(args[1].split(",")) <= 5):
@@ -28,20 +28,15 @@ def main():
         covid_stats.compare(countries, week)
 
     elif command == "stats" and len(args) == 4:
-        country = args[1]
-        beginning_date = args[2]
-        ending_date = args[3]
-        cases, deaths = covid_stats.stats(country, beginning_date, ending_date)
-        print(f"Total cases in {country} from {beginning_date} to {ending_date}: {cases}")
-        print(f"Total deaths in {country} from {beginning_date} to {ending_date}: {deaths}")
-
+        handle_stats(args[1], args[2], args[3])
     elif command == "highest" and len(args) == 3:
-        beginning_date = args[1]
-        ending_date = args[2]
-        covid_stats.highest(beginning_date, ending_date)
-
+        handle_highest(args[1], args[2])
     else:
         print_usage()
+
+def main():
+    args = sys.argv[1:]
+    process_command(args)
 
 if __name__ == "__main__":
     main()
