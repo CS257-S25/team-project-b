@@ -46,14 +46,22 @@ class TestCovidStats(unittest.TestCase):
     
     def test_commands(self):
         """Test function for the compare function"""
-        sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01', '2020-01-12']
+        sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01', '2020-01-12', '123']
         sys.stdout = StringIO()
-        cl.main()
+        cl.command(sys.argv[1:])
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Usage:\n
                          python cl.py compare country1,country2..country5 date\n
                          python cl.py stats country beginning_date ending_date\n
                          python cl.py highest beginning_date ending_date""")
+    
+    def test_handle_compare(self):
+        sys.stdout = StringIO()
+        cl.handle_compare('Afghanistan,Albania', '2020-01-01')
+        printed_output = sys.stdout.getvalue()
+        self.assertEqual(printed_output, "Total cases in Afghanistan during 2020-01-01: 0\nTotal deaths in Albania from 2020-01-01: 0")
+        self.assertEqual(cl.handle_compare('Afghanistan,Albania', '2020-01-01'), [('Afghanistan', 0, 0), ('Albania', 0, 0)])
+        
     
     def test_cl_main_not_enough_args(self):
         """Test function for the command line main function when not enough arguments are provided"""
