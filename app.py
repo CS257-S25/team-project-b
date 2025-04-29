@@ -28,6 +28,19 @@ def stats(country, beginning_date, ending_date):
         )
     except (ValueError, KeyError) as e:
         return f"Error: Invalid input or missing data. {str(e)}"
+    
+@app.route('/compare/<date>/<countries>')
+def compare(date, countries):
+    """This function compares COVID-19 stats for multiple countries using one date"""
+    try:
+        output = f"COVID-19 data for {date}:\n"
+        for country in countries.split(','):
+            cases, deaths = covid_stats.stats(country, date, date)
+            output += f"{country}: Cases={cases}, Deaths={deaths}\n"
+        return output
+    except (ValueError, KeyError) as e:
+        return f"Error: {str(e)}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
