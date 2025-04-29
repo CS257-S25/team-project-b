@@ -14,6 +14,10 @@ class TestFlaskApp(unittest.TestCase):
     def test_compare_valid_data(self):
         response = self.app.get('/compare/2020-03-01/US,AF')
         self.assertIn(b'COVID-19 data for 2020-03-01:', response.data)
+    def test_valid_stats(self):
+        """Test if valid country stats load correctly."""
+        response = self.client.get('/stats/US/2020-03-01/2021-03-10')
+        self.assertIn(b'COVID-19 stats for US', response.data)
 
 if __name__ == '__main__':
     unittest.main()
