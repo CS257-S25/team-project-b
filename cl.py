@@ -2,9 +2,12 @@ import sys
 from ProductionCode import covid_stats
 
 def print_usage():
-    print("Usage:")
-    print("  python cl.py compare country1,country2 beginning_date ending_date")
-    print("  python cl.py stats country beginning_date ending_date")
+    print("""Usage:\n
+          python cl.py compare country1,country2 beginning_date ending_date\n
+          python cl.py stats country beginning_date ending_date
+          """)
+
+    
     '''print("  python cl.py highest beginning_date ending_date")'''
 
 def main():
@@ -21,13 +24,6 @@ def main():
             print_usage()
             return
         countries = args[1].split(",")
-        '''
-        Country1 = countries[0]
-        country2 = countries[1]
-        country3 = countries[2] if len(countries) > 2 else None
-        country4 = countries[3] if len(countries) > 3 else None
-        country5 = countries[4] if len(countries) > 4 else None
-        '''
         week = args[2]
         covid_stats.compare(countries, week)
 
