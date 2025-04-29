@@ -9,13 +9,16 @@ app = Flask(__name__)
 def homepage():
     """Show homepage instructions."""
     return (
-        "Hello, this is the homepage.\n\n"
-        "To get COVID-19 statistics, use this URL format:\n"
-        "/stats/<country>/<beginning_date>/<ending_date>\n"
+        "<h1>Hello, this is the homepage.</h1>"
+        "- To get COVID-19 statistics, use this URL format:"
+        "/stats/<country>/<beginning_date>/<ending_date>"
         "Example:\n"
-        "/stats/USA/2020-03-01/2020-03-10"
-    )
+        "/stats/USA/2020-03-01/2020-03-10<br>"
+        "- please use this format to compare: /compare///"
+        "\nExample:\n"
+        "/compare/2020-04-19/US,GB"
 
+    )
 @app.route("/stats/<country>/<beginning_date>/<ending_date>", strict_slashes=False)
 def stats(country, beginning_date, ending_date):
     """Show COVID-19 stats for a country between two dates."""
@@ -40,7 +43,20 @@ def compare(date, countries):
         return output
     except (ValueError, KeyError) as e:
         return f"Error: {str(e)}"
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 errors with a custom message."""
+    
+    return (""
+    "<h1>Error 404: The requested resource was not found.</h1>"
+        "- To get COVID-19 statistics, use this URL format:"
+        "/stats/<country>/<beginning_date>/<ending_date>"
+        "Example:\n"
+        "/stats/USA/2020-03-01/2020-03-10<br>"
+        "- please use this format to compare: /compare///"
+        "\nExample:\n"
+        "/compare/2020-04-19/US,GB", 404)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5001)
