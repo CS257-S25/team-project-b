@@ -65,15 +65,14 @@ class TestCovidStats(unittest.TestCase):
     
     def test_cl_main_not_enough_args(self):
         """Test function for the command line main function when not enough arguments are provided"""
-        sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01']
-        i = 3
-        while i != 0:
-            i -= 1
-            sys.stdout = StringIO()
-            cl.main()
-            printed_output = sys.stdout.getvalue()
-            self.assertEqual(printed_output, "Usage:\n  python cl.py compare country1,country2 beginning_date ending_date\n  python cl.py stats country beginning_date ending_date\n  python cl.py highest beginning_date ending_date")
-            sys.argv.pop()
+        sys.argv = ['cl.py', 'stats']
+        sys.stdout = StringIO()
+        cl.main()
+        printed_output = sys.stdout.getvalue()
+        self.assertEqual(printed_output, """Usage:\n
+                         python cl.py compare country1,country2 beginning_date ending_date\n
+                         python cl.py stats country beginning_date ending_date\n 
+                         python cl.py highest beginning_date ending_date""")
     
     def test_cl_main_stats(self):
         """Test function for the command line main function when stats are requested"""
@@ -89,4 +88,5 @@ class TestCovidStats(unittest.TestCase):
         sys.stdout = StringIO()
         cl.main()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, "")
+        self.assertEqual(printed_output, "Total cases in Afghanistan during 2020-01-01: 0\nTotal deaths in Albania from 2020-01-01: 0")
+        self.assertEqual(cl.main(), [('Afghanistan', 0, 0), ('Albania', 0, 0)])
