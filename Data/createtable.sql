@@ -1,19 +1,12 @@
-DROP TABLE IF EXISTS covid;
+DROP TABLE IF EXISTS bigTable;
 
-CREATE TABLE covid (
-  date_id int,
-  country_id int,
-  new_cases int,
-  new_deaths int,
-);
-
-CREATE TABLE countries (
-  country_id int,
-  country_code text,
-  country text,
-);
-
-CREATE TABLE date (
-  date_reported date,
-  date_id int,
+CREATE TABLE  bigTable(
+  Date_reported date,
+  Country_code text,
+  Country text,
+  WHO_region text,
+  New_cases int,
+  Cumulative_cases int,
+  New_deaths int,
+  Cumulative_deaths int
 );
