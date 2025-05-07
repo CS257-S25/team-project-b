@@ -4,7 +4,7 @@ import csv
 from datetime import datetime
 
 # Load data once
-with open('Data/WHO-COVID-19-global-data.csv', 'r') as file:
+with open('Data/WHO-COVID-19-global-data.csv', 'r', encoding='utf-8') as file:
     reader = csv.DictReader(file)
     data = list(reader)
 
@@ -23,7 +23,7 @@ def stats(country, beginning_date, ending_date):
     total_deaths = 0
 
     for row in data:  # use already loaded data
-        if row['Country'] == country or row['Country_code'] == country:
+        if country in (row['Country'], row['Country_code']):
             date = datetime.strptime(row['Date_reported'], "%Y-%m-%d")
 
             if beginning <= date <= ending:
