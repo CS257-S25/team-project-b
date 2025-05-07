@@ -26,21 +26,11 @@ def stats(country, beginning_date, ending_date):
 
 def compare(countries, week):
     results = []
+    output = ""
     for country in countries:
         cases, deaths = stats(country, week, week)
-        print(f"""Total cases in {country} during {week}: {cases}\n
-              Total deaths in {country} from {week}: {deaths}\n""")
+        output += (f"Total cases in {country} during {week}: {cases}\n"
+              f"Total deaths in {country} from {week}: {deaths}\n")
+        print(output)
         results.append((country, cases, deaths))
     return results
-
-'''
-def highest(week):
-    highest_cases = 0
-    highest_country = ""
-    for row in data:
-        if row['Date_reported'] == week:
-            if row['New_cases'] != '' and int(row['New_cases']) > highest_cases:
-                highest_cases = int(row['New_cases'])
-                highest_country = row['Country']
-    print(f"Country with the highest cases in {week}: {highest_country} with {highest_cases} cases")
-'''
