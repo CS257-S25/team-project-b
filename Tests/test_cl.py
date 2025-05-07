@@ -68,7 +68,7 @@ python cl.py highest beginning_date ending_date""")
     
     def test_handle_compare_not_enough_args(self):
         sys.stdout = StringIO()
-        cl.handle_compare('Afghanistan,Albania')
+        cl.handle_compare('Afghanistan', '2020-01-01')
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Usage:\n
 python cl.py compare country1,country2..country5 date\n
