@@ -19,11 +19,9 @@ To run this scenario, the user would input:
 
 The output would look something like:
 Total cases in GB during 2021-10-10: 254728
-
-                   Total deaths in GB from 2021-10-10: 840
+Total deaths in GB from 2021-10-10: 840
 Total cases in US during 2021-10-10: 681984
-
-                   Total deaths in US from 2021-10-10: 11684
+Total deaths in US from 2021-10-10: 11684
 
 ## User Story #2 📖 "stats"
 
@@ -36,8 +34,7 @@ To run this scenario, the user would input:
 
 The output would look something like:
 Total cases in US from 2022-01-01 to 2022-02-01: 21878018!
-
-          Total deaths in US from 2022-01-01 to 2022-02-01: 69953!
+Total deaths in US from 2022-01-01 to 2022-02-01: 69953!
 
 # Acceptance Tests ✅
 For this project, our Acceptance Tests can be found under the "Tests" folder in files titled "test_cl.py" and "test_app.py".
