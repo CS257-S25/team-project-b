@@ -104,8 +104,7 @@ python cl.py highest beginning_date ending_date""")
         sys.stdout = StringIO()
         cl.main()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0\n
-Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
+        self.assertEqual(printed_output, """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0\nTotal deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
         
     def test_cl_main_compare(self):
         """Test function for the command line main function when compare is requested"""
