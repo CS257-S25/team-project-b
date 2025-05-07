@@ -15,7 +15,7 @@ Allows a user to compare total  COVID-19 cases and deaths for up to five countri
 
 #### Usage:
 To run this scenario, the user would input:
-python3 cl.py --compare "Brazil" "France" -- week "2021-02-14"
+"python3 cl.py compare GB,US 2021-10-10"
 
 The output would look something like:
 Brazil: 318290 cases, 7455 deaths
@@ -27,7 +27,7 @@ Allows a user to display the total weekly COVID-19 cases and deaths for a chosen
 
 #### Usage: 
 To run this scenario, the user would input:
-"python3 cl.py compare GB,US 2021-10-10"
+
 "python3 cl.py stats US 2022-01-01 2022-02-01"
 
 The output would look something like:
