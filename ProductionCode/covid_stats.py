@@ -28,8 +28,8 @@ def compare(countries, week):
     output = ""
     for country in countries:
         cases, deaths = stats(country, week, week)
-        output += (f"Total cases in {country} during {week}: {cases}\n"
-              f"Total deaths in {country} from {week}: {deaths}\n")
+        output += (f"""Total cases in {country} during {week}: {cases}\n
+                   Total deaths in {country} from {week}: {deaths}\n""")
     return output
 
 """def compare(countries, week):
