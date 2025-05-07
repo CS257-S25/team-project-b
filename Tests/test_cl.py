@@ -82,9 +82,9 @@ python cl.py highest beginning_date ending_date""")
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Usage:\n
-          python cl.py compare country1,country2..country5 date\n
-          python cl.py stats country beginning_date ending_date\n
-          python cl.py highest beginning_date ending_date""")
+python cl.py compare country1,country2..country5 date\n
+python cl.py stats country beginning_date ending_date\n
+python cl.py highest beginning_date ending_date""")
     
     def test_cl_main_not_enough_args(self):
         """Test function for the command line main function when not enough arguments are provided"""
@@ -93,9 +93,9 @@ python cl.py highest beginning_date ending_date""")
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Usage:\n
-                         python cl.py compare country1,country2 beginning_date ending_date\n
-                         python cl.py stats country beginning_date ending_date\n 
-                         python cl.py highest beginning_date ending_date""")
+python cl.py compare country1,country2 beginning_date ending_date\n
+python cl.py stats country beginning_date ending_date\n 
+python cl.py highest beginning_date ending_date""")
     
     
     def test_cl_main_stats(self):
@@ -105,7 +105,7 @@ python cl.py highest beginning_date ending_date""")
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0\n
-                         Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
+Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
         
     def test_cl_main_compare(self):
         """Test function for the command line main function when compare is requested"""
@@ -114,5 +114,5 @@ python cl.py highest beginning_date ending_date""")
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Total cases in Afghanistan during 2020-01-01: 0\n
-                         Total deaths in Albania from 2020-01-01: 0\n\nTotal cases in Albania during 2020-01-01: 0\n
-                         Total deaths in Afghanistan from 2020-01-01: 0\n""")
+Total deaths in Albania from 2020-01-01: 0\n\nTotal cases in Albania during 2020-01-01: 0\n
+Total deaths in Afghanistan from 2020-01-01: 0\n""")
