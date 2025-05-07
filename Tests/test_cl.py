@@ -114,5 +114,5 @@ Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Total cases in Afghanistan during 2020-01-01: 0\n
-Total deaths in Albania from 2020-01-01: 0\nTotal cases in Albania during 2020-01-01: 0\n
-Total deaths in Afghanistan from 2020-01-01: 0\n""")
+Total deaths in Afghanistan from 2020-01-01: 0\nTotal cases in Albania during 2020-01-01: 0\n
+Total deaths in Albania from 2020-01-01: 0\n""")
