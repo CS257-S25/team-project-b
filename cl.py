@@ -1,13 +1,13 @@
 import sys
 from ProductionCode import covid_stats
-
+"""Command line interface for the covid_stats module"""
 
 def print_usage():
     """Prints usage instructions for the command line
     no arguments passed
     """
     print("""s""")
-    
+
 """Usage:\n
           python cl.py compare country1,country2..country5 date\n
           python cl.py stats country beginning_date ending_date\n
@@ -21,7 +21,7 @@ def handle_compare(countries_arg, week):
     week
     """
     countries = countries_arg.split(",")
-    if not (2 <= len(countries) <= 5):
+    if not 2 <= len(countries) <= 5:
         print_usage()
         return
     covid_stats.compare(countries, week)
@@ -48,10 +48,10 @@ def command(args):
     if len(args) == 0:
         print_usage()
         return
-    command = args[0]
-    if command == "compare" and len(args) == 3:
+    command_arg = args[0]
+    if command_arg == "compare" and len(args) == 3:
         handle_compare(args[1], args[2])
-    elif command == "stats" and len(args) == 4:
+    elif command_arg == "stats" and len(args) == 4:
         handle_stats(args[1], args[2], args[3])
     else:
         print_usage()
