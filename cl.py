@@ -22,7 +22,8 @@ def handle_compare(countries_arg, week):
     if not 2 <= len(countries) <= 5:
         print_usage()
         return
-    covid_stats.compare(countries, week)
+    printStatement = covid_stats.compare(countries, week)
+    print(printStatement)
 
 def handle_stats(country, beginning_date, ending_date):
     """Handles the stats command-calls for one country
