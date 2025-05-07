@@ -15,7 +15,7 @@ Allows a user to compare total  COVID-19 cases and deaths for up to five countri
 
 #### Usage:
 To run this scenario, the user would input:
-python3 cl.py --compare "Brazil" "France" -- week "2021-02-14"
+"python3 cl.py compare GB,US 2021-10-10"
 
 The output would look something like:
 Brazil: 318290 cases, 7455 deaths
@@ -27,7 +27,8 @@ Allows a user to display the total weekly COVID-19 cases and deaths for a chosen
 
 #### Usage: 
 To run this scenario, the user would input:
-python3 cl.py --country "France" --weeks "2021-02-14" "2021-03-14"
+
+"python3 cl.py stats US 2022-01-01 2022-02-01"
 
 The output would look something like:
 Week of 2021-02-15: 110436 cases, 2892 deaths 
@@ -41,14 +42,14 @@ Acceptance tests are designed to ensure that the tool meets the requirements out
 
 ### How They Relate to User Stories
 1. **User Story #1: compare**
-   - The `test_cl.py` file contains tests for the `--compare` feature.
+   - The `test_cl.py` file contains tests for the `compare` feature.
    - These tests verify that the tool correctly compares COVID-19 statistics for up to five countries during a specified week.
-   - Example: The test ensures that running the command `python3 cl.py --compare "France" "Brazil" --week "2021-02-15"` produces the expected output format and data.
+   - Example: The test ensures that running the command `python3 cl.py compare GB,US 2021-10-10"` produces the expected output format and data.
 
 2. **User Story #2: stats**
    - The `test_cl.py` file also includes tests for the `--stats` feature.
    - These tests validate that the tool displays weekly COVID-19 cases and deaths for a chosen country over multiple weeks.
-   - Example: The test ensures that running the command `python3 cl.py --country "France" --weeks "2021-03-01" "2021-03-08" "2021-03-15"` produces the correct weekly statistics.
+   - Example: The test ensures that running the command `python3 cl.py stats US 2022-01-01 2022-02-01` produces the correct weekly statistics.
 
 ### How to Run the Tests
 To run the acceptance tests, use the following command in the terminal:
