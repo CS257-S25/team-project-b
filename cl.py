@@ -1,6 +1,6 @@
+"""Command line interface for the covid_stats module"""
 import sys
 from ProductionCode import covid_stats
-"""Command line interface for the covid_stats module"""
 
 def print_usage():
     """Prints usage instructions for the command line
@@ -22,8 +22,8 @@ def handle_compare(countries_arg, week):
     if not 2 <= len(countries) <= 5:
         print_usage()
         return
-    printStatement = covid_stats.compare(countries, week)
-    print(printStatement)
+    print_statement = covid_stats.compare(countries, week)
+    print(print_statement)
 
 def handle_stats(country, beginning_date, ending_date):
     """Handles the stats command-calls for one country
