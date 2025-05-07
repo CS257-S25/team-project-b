@@ -42,8 +42,8 @@ class TestCovidStats(unittest.TestCase):
         cl.handle_stats('Afghanistan', '2020-01-01', '2020-01-12')
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output,
-                         """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0\n
-                         Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0""")
+                         """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n
+          Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n""")
 
     def test_commands(self):
         """Test function for the compare function"""
@@ -108,8 +108,6 @@ class TestCovidStats(unittest.TestCase):
         sys.stdout = StringIO()
         cl.main()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(
-            printed_output,
-            ("Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n"
-             "Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n")
-        )
+        self.assertEqual(printed_output, """Total cases in Afghanistan during 2020-01-01: 0\n
+                   Total deaths in Afghanistan from 2020-01-01: 0\nTotal cases in Albania during 2020-01-01: 0\n
+                   Total deaths in Albania from 2020-01-01: 0\n\n""")
