@@ -43,8 +43,10 @@ def compare(countries, week):
         str: A formatted string with the comparison results.
     """
     output = ""
+    results = []
     for country in countries:
         cases, deaths = stats(country, week, week)
         output += (f"""Total cases in {country} during {week}: {cases}\n
                    Total deaths in {country} from {week}: {deaths}\n""")
+        results.append((country, cases, deaths))
     return output
