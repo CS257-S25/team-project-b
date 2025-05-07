@@ -34,7 +34,7 @@ def handle_stats(country, beginning_date, ending_date):
     ending_date: str - third
     """
     cases, deaths = covid_stats.stats(country, beginning_date, ending_date)
-    print(f"""Total cases in {country} from {beginning_date} to {ending_date}: {cases}\n
+    print(f"""Total cases in {country} from {beginning_date} to {ending_date}: {cases}!\n
           Total deaths in {country} from {beginning_date} to {ending_date}: {deaths}!""")
 
 def command(args):
