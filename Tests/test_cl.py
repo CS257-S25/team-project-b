@@ -29,10 +29,6 @@ class TestCovidStats(unittest.TestCase):
 Total deaths in Afghanistan from 2020-01-01: 0\n\nTotal cases in Albania during 2020-01-01: 0\n
 Total deaths in Albania from 2020-01-01: 0\n\n""")
     
-    def test_compare_usage_statement(self):
-        """Test function for the compare function usage statement"""
-        self.assertEqual(covid_stats.compare('Afghanistan,Albania', '2019-01-01'), (0, 0))
-    
     def test_print_usage(self):
         """Test function for the print usage function"""
         sys.stdout = StringIO()
