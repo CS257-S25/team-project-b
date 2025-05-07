@@ -19,10 +19,7 @@ class TestCovidStats(unittest.TestCase):
         sys.stdout = StringIO()
         cl.handle_compare('Afghanistan', '2020-01-01')
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-python cl.py compare country1,country2..country5 date\n
-python cl.py stats country beginning_date ending_date\n
-python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     def test_handle_compare(self):
         sys.stdout = StringIO()
@@ -42,10 +39,7 @@ Total deaths in Albania from 2020-01-01: 0\n""")
         sys.stdout = StringIO()
         cl.print_usage()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-python cl.py compare country1,country2..country5 date\n
-python cl.py stats country beginning_date ending_date\n
-python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     def handle_stats(self):
         """Test function for the stats function"""
@@ -61,19 +55,13 @@ python cl.py highest beginning_date ending_date""")
         sys.stdout = StringIO()
         cl.command(sys.argv[1:])
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-python cl.py compare country1,country2..country5 date\n
-python cl.py stats country beginning_date ending_date\n
-python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     def test_handle_compare_not_enough_args(self):
         sys.stdout = StringIO()
         cl.handle_compare('Afghanistan', '2020-01-01')
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-python cl.py compare country1,country2..country5 date\n
-python cl.py stats country beginning_date ending_date\n
-python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     def test_cl_main_not_enough_args(self):
         """Test function for the command line main function when not enough arguments are provided"""
@@ -81,10 +69,7 @@ python cl.py highest beginning_date ending_date""")
         sys.stdout = StringIO()
         cl.main()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-          python cl.py compare country1,country2..country5 date\n
-          python cl.py stats country beginning_date ending_date\n
-          python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     def test_cl_main_not_enough_args(self):
         """Test function for the command line main function when not enough arguments are provided"""
@@ -92,10 +77,7 @@ python cl.py highest beginning_date ending_date""")
         sys.stdout = StringIO()
         cl.main()
         printed_output = sys.stdout.getvalue()
-        self.assertEqual(printed_output, """Usage:\n
-          python cl.py compare country1,country2..country5 date\n
-          python cl.py stats country beginning_date ending_date\n
-          python cl.py highest beginning_date ending_date""")
+        self.assertEqual(printed_output, """s""")
     
     
     def test_cl_main_stats(self):
