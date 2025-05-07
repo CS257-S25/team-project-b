@@ -6,12 +6,10 @@ def print_usage():
     """Prints usage instructions for the command line
     no arguments passed
     """
-    print("""s""")
-
-"""Usage:\n
+    print("""Usage:\n
           python cl.py compare country1,country2..country5 date\n
           python cl.py stats country beginning_date ending_date\n
-          python cl.py highest beginning_date ending_date"""
+          python cl.py highest beginning_date ending_date""")
 
 def handle_compare(countries_arg, week):
     """Handles the compare command between 2+ countries
