@@ -3,13 +3,21 @@ from ProductionCode import covid_stats
 
 
 def print_usage():
+    """Prints usage instructions for the command line
+    no arguments passed
+    """
     print("""Usage:\n
           python cl.py compare country1,country2..country5 date\n
           python cl.py stats country beginning_date ending_date\n
           python cl.py highest beginning_date ending_date""")
 
 def handle_compare(countries_arg, week):
-    """Handles the compare command"""
+    """Handles the compare command between 2+ countries
+    Calls the compare function from covid_stats
+    Passed arguments are:
+    countries_arg
+    week
+    """
     countries = countries_arg.split(",")
     if not (2 <= len(countries) <= 5):
         print_usage()
@@ -17,19 +25,28 @@ def handle_compare(countries_arg, week):
     covid_stats.compare(countries, week)
 
 def handle_stats(country, beginning_date, ending_date):
-    """Handles the stats command"""
+    """Handles the stats command-calls for one country
+    between two dates
+    Calls the stats function from covid_stats
+    Passed arguments are:
+    country: str - first
+    beginning_date: str - second
+    ending_date: str - third
+    """
     cases, deaths = covid_stats.stats(country, beginning_date, ending_date)
     print(f"""Total cases in {country} from {beginning_date} to {ending_date}: {cases}\n
           Total deaths in {country} from {beginning_date} to {ending_date}: {deaths}""")
 
 def command(args):
-    """Handles command line arguments"""
+    """Takes the command line arguments and calls the appropriate function
+    based on the command
+    compare or stats
+    1 argument for either
+    """
     if len(args) == 0:
         print_usage()
         return
-
     command = args[0]
-
     if command == "compare" and len(args) == 3:
         handle_compare(args[1], args[2])
     elif command == "stats" and len(args) == 4:
