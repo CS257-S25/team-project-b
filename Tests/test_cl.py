@@ -92,7 +92,7 @@ class TestCovidStats(unittest.TestCase):
         cl.main()
         printed_output = sys.stdout.getvalue()
         self.assertEqual(printed_output, """Total cases in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n
-          Total deaths in Afghanistan from 2020-01-01 to {2020-01-12: 0!\n""")
+          Total deaths in Afghanistan from 2020-01-01 to 2020-01-12: 0!\n""")
         
     def test_cl_main_compare(self):
         """Test function for the command line main function when compare is requested"""
