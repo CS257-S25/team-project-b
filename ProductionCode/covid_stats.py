@@ -1,3 +1,5 @@
+"""This module provides functions to calculate COVID-19 statistics
+for given countries and date ranges."""
 import csv
 from datetime import datetime
 
@@ -7,6 +9,13 @@ with open('Data/WHO-COVID-19-global-data.csv', 'r') as file:
     data = list(reader)
 
 def stats(country, beginning_date, ending_date):
+    """Calculates the total number of cases and deaths for a given country
+    between two dates.
+    Args:
+        country (str): The name or code of the country.
+        beginning_date (str): The start date in "YYYY-MM-DD" format.
+        ending_date (str): The end date in "YYYY-MM-DD" format.
+   """
     beginning = datetime.strptime(beginning_date, "%Y-%m-%d")
     ending = datetime.strptime(ending_date, "%Y-%m-%d")
 
@@ -25,20 +34,17 @@ def stats(country, beginning_date, ending_date):
     return total_cases, total_deaths
 
 def compare(countries, week):
+    """Compares the COVID-19 statistics for a list of countries
+    for a given week.
+    Args:
+        countries (list): List of country names or codes.
+        week (str): The week to compare statistics for.
+    Returns:
+        str: A formatted string with the comparison results.
+    """
     output = ""
     for country in countries:
         cases, deaths = stats(country, week, week)
         output += (f"""Total cases in {country} during {week}: {cases}\n
                    Total deaths in {country} from {week}: {deaths}\n""")
     return output
-
-"""def compare(countries, week):
-    results = []
-    output = ""
-    for country in countries:
-        cases, deaths = stats(country, week, week)
-        output += (f"Total cases in {country} during {week}: {cases}\n"
-              f"Total deaths in {country} from {week}: {deaths}\n")
-    print(output)
-    results.append((country, cases, deaths))
-    return results"""
