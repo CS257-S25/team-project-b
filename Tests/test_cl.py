@@ -13,7 +13,17 @@ class TestCovidStats(unittest.TestCase):
     def test_stats(self):
         """Test function for the stats function"""
         self.assertEqual(covid_stats.stats('Afghanistan', '2020-01-01', '2020-01-12'), (0, 0))
-        
+    
+    def test_handle_compare_invalid_args(self):
+        """Test function for the compare function with invalid arguments"""
+        sys.stdout = StringIO()
+        cl.handle_compare('Afghanistan', '2020-01-01')
+        printed_output = sys.stdout.getvalue()
+        self.assertEqual(printed_output, """Usage:\n
+                         python cl.py compare country1,country2..country5 date\n
+                         python cl.py stats country beginning_date ending_date\n
+                         python cl.py highest beginning_date ending_date""")
+    
     def test_compare(self):
         """Test function for the compare function"""
         sys.stdout = StringIO()
