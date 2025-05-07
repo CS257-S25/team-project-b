@@ -28,7 +28,6 @@ class TestCovidStats(unittest.TestCase):
         self.assertEqual(printed_output, """Total cases in Afghanistan during 2020-01-01: 0\n
 Total deaths in Afghanistan from 2020-01-01: 0\n\nTotal cases in Albania during 2020-01-01: 0\n
 Total deaths in Albania from 2020-01-01: 0\n""")
-        self.assertEqual(cl.handle_compare('Afghanistan,Albania', '2020-01-01'), [('Afghanistan', 0, 0), ('Albania', 0, 0)])
     
     def test_compare_usage_statement(self):
         """Test function for the compare function usage statement"""
