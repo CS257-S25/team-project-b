@@ -39,12 +39,30 @@ class DataSource:
         value = cursor.fetchall()
         return value
     
+    def get_stats(self, country, beginning_date, ending_date):
+        '''bruh'''
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM bigTable WHERE Country =%s AND Date_reported >%s AND Date_reported <%s", (country, beginning_date, ending_date))
+        value = cursor.fetchall()
+        return value
+    
 if __name__ == "__main__":
     ds = DataSource()
-    results = ds.get_week_country_and_new_deaths("Afghanistan", "2023-08-06")
+    results = ds.get_stats("Afghanistan", "2023-06-18", "20203-08-06")
     cases_results = ds.get_week_country_and_new_cases("Afghanistan", "2023-08-06")
     """results = ds.get_specific()"""
-    print(results[0][0])
-    print("-----------")
+    i = 0
+    length = len(results)
+    results_list = []
+    while i < length:
+        j = 0
+        small_list = []
+        while j < 5:
+            small_list.append(results[i][j])
+            j += 1
+        results_list.append(small_list)
+        i += 1
+    for i in results_list:
+        print(i)
     print(cases_results[0][0])
     ds.connection.close()
