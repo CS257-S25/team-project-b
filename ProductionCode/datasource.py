@@ -41,6 +41,7 @@ class DataSource:
     
 if __name__ == "__main__":
     ds = DataSource()
-    results = ds.get_week_country_and_new_cases()
+    """results = ds.get_week_country_and_new_cases("Afghanistan", "2020-02-10")"""
+    results = ds.get_specific()
     print(results)
     ds.connection.close()
