@@ -3,47 +3,30 @@ import sys
 from ProductionCode import covid_stats
 
 def print_usage():
-    """Prints usage instructions for the command line
-    no arguments passed
-    """
-    print("""Usage:\n
-          python cl.py compare country1,country2..country5 date\n
-          python cl.py stats country beginning_date ending_date\n
-          python cl.py highest beginning_date ending_date""")
+    """Prints usage instructions for the command line"""
+    print("""Usage:
+    python cl.py compare country1,country2..country5 date
+    python cl.py stats country beginning_date ending_date
+    """)
 
 def handle_compare(countries_arg, week):
-    """Handles the compare command between 2+ countries
-    Calls the compare function from covid_stats
-    Passed arguments are:
-    countries_arg
-    week
-    """
+    """Handles the compare command for multiple countries"""
     countries = countries_arg.split(",")
     if not 2 <= len(countries) <= 5:
+        print("Please provide between 2 and 5 countries.")
         print_usage()
         return
-    print_statement = covid_stats.compare(countries, week)
-    print(print_statement)
+    result = covid_stats.compare(countries, week)
+    print(result)
 
 def handle_stats(country, beginning_date, ending_date):
-    """Handles the stats command-calls for one country
-    between two dates
-    Calls the stats function from covid_stats
-    Passed arguments are:
-    country: str - first
-    beginning_date: str - second
-    ending_date: str - third
-    """
+    """Handles the stats command for a single country"""
     cases, deaths = covid_stats.stats(country, beginning_date, ending_date)
-    print(f"""Total cases in {country} from {beginning_date} to {ending_date}: {cases}!\n
-          Total deaths in {country} from {beginning_date} to {ending_date}: {deaths}!""")
+    print(f"Total cases in {country} from {beginning_date} to {ending_date}: {cases}")
+    print(f"Total deaths in {country} from {beginning_date} to {ending_date}: {deaths}")
 
 def command(args):
-    """Takes the command line arguments and calls the appropriate function
-    based on the command
-    compare or stats
-    1 argument for either
-    """
+    """Parses and routes CLI arguments to the appropriate function"""
     if len(args) == 0:
         print_usage()
         return
@@ -53,10 +36,10 @@ def command(args):
     elif command_arg == "stats" and len(args) == 4:
         handle_stats(args[1], args[2], args[3])
     else:
+        print("Invalid arguments.")
         print_usage()
 
 def main():
-    """Main function to handle command line arguments"""
     args = sys.argv[1:]
     command(args)
 
