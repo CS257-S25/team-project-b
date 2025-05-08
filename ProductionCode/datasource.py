@@ -25,6 +25,13 @@ class DataSource:
         results = cursor.fetchall()
         return results
     
+    def get_week_country_and_new_deaths(self, country, date):
+        '''Returns the week, country and the number of new cases.'''
+        cursor = self.connection.cursor()
+        cursor.execute(f"SELECT New_deaths FROM bigTable where Country = {country} AND Date_reported = {date}")
+        results = cursor.fetchall()
+        return results
+    
     def get_specific(self):
         '''Returns the values of Afghanistan in the table.'''
         cursor = self.connection.cursor()
