@@ -1,21 +1,26 @@
+-- Drop in the correct order to avoid dependency issues
 DROP TABLE IF EXISTS covid;
-
-CREATE TABLE covid (
-  date_id int,
-  country_id int,
-  new_cases int,
-  new_deaths int,
-);
 DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS report_dates;
 
+-- Table for countries
 CREATE TABLE countries (
-  country_id int,
+  country_id serial PRIMARY KEY,
   country_code text,
-  country text,
+  country text
 );
-DROP TABLE IF EXISTS date;
 
-CREATE TABLE date (
-  date_reported date,
-  date_id int,
+-- Table for dates
+CREATE TABLE report_dates (
+  date_id serial PRIMARY KEY,
+  date_reported date
+);
+
+-- Table for covid stats
+CREATE TABLE covid (
+  id serial PRIMARY KEY,
+  date_id int REFERENCES report_dates(date_id),
+  country_id int REFERENCES countries(country_id),
+  new_cases int,
+  new_deaths int
 );
