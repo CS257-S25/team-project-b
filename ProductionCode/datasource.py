@@ -21,14 +21,14 @@ class DataSource:
     def get_week_country_and_new_cases(self, country, date):
         '''Returns the week, country and the number of new cases.'''
         cursor = self.connection.cursor()
-        cursor.execute(f"SELECT {date}, {country}, New_cases FROM bigTable")
+        cursor.execute(f"SELECT New_cases FROM bigTable where Country = {country} AND Date_reported = {date}")
         results = cursor.fetchall()
         return results
     
     def get_specific(self):
         '''Returns the values of Afghanistan in the table.'''
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM bigTable WHERE country =%s", ('Afghanistan',))
+        cursor.execute("SELECT * FROM bigTable WHERE Country =%s", ('Afghanistan',))
         value = cursor.fetchall
         return value
     
