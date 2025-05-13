@@ -56,7 +56,15 @@ def page_not_found(e):
         "- please use this format to compare: /compare///"
         "\nExample:\n"
         "/compare/2020-04-19/US,GB", 404)
-
+    
+    
+@app.route('/funfacts')
+def fun_facts():
+    """This function compares COVID-19 stats for multiple countries using one date"""
+    list_of_creators = ["Fenan", "Owen", "Anthony", "Daniel"]
+    for i in list_of_creators:
+        return_value += i + " is a computer scientist"
+    return return_value
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -30,6 +30,13 @@ class TestFlaskApp(unittest.TestCase):
         """Test the compare route with an invalid date format."""
         response = self.app.get('/compare/invalid-date/US,AF')
         self.assertNotEqual(response.status_code, 200)
+        
+    def test_compare_fun_facts(self):
+        """Test the funfacts route."""
+        response = self.app.get('/funfacts')
+        self.assertNotEqual(response.status_code, 200)  
+        self.assertIn(b"Fenan", response.data) 
+    
 
 if __name__ == '__main__':
     unittest.main()
