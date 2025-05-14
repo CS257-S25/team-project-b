@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19 Stats</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <h1>COVID-19 Tracker</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h2>View COVID-19 Stats by Country</h2>
+        <p>Select a country and date range to view total cases and deaths.</p>
+    </header>
+
+   <section>
+    <form method="post">
+        <label for="country">Country:</label><br>
+        <select id="country" name="country" required>
+            <option value="">--Select Country--</option>
+            {% for c in countries %}
+                <option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="beginning_date">Start Date (YYYY-MM-DD):</label><br>
+        <input type="date" id="beginning_date" name="beginning_date" required><br><br>
+
+        <label for="ending_date">End Date (YYYY-MM-DD):</label><br>
+        <input type="date" id="ending_date" name="ending_date" required><br><br>
+
+        <button type="submit" class="button">Submit</button>
+    </form>
+</section>
+
+
+    {% if country %}
+    <section>
+        <h3>Results for {{ country }}</h3>
+        <p>Total Cases: {{ cases }}</p>
+        <p>Total Deaths: {{ deaths }}</p>
+        <p>From {{ start }} to {{ end }}</p>
+    </section>
+    {% endif %}
+
+    <footer>
+        <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
+    </footer>
+</body>
+</html>
