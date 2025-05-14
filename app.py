@@ -1,70 +1,47 @@
-"""Flask app to show COVID-19 statistics."""
-
-from flask import Flask
+from flask import Flask, render_template, request
 from ProductionCode import covid_stats
+from ProductionCode.datasource import DataSource
 
 app = Flask(__name__)
-
+ds = DataSource()
 @app.route('/')
 def homepage():
-    """Show homepage instructions."""
-    return (
-        "<h1>Hello, this is the homepage.</h1>"
-        "- To get COVID-19 statistics, use this URL format:"
-        "/stats/<country>/<beginning_date>/<ending_date>"
-        "Example:\n"
-        "/stats/USA/2020-03-01/2020-03-10<br>"
-        "- please use this format to compare: /compare///"
-        "\nExample:\n"
-        "/compare/2020-04-19/US,GB"
+    return render_template('index.html')
 
-    )
-@app.route("/stats/<country>/<beginning_date>/<ending_date>", strict_slashes=False)
-def stats(country, beginning_date, ending_date):
-    """Show COVID-19 stats for a country between two dates."""
-    try:
-        total_cases, total_deaths = covid_stats.stats(country, beginning_date, ending_date)
-        return (
-            f"COVID-19 stats for {country} from {beginning_date} to {ending_date}:\n"
-            f"Total Cases: {total_cases}\n"
-            f"Total Deaths: {total_deaths}"
-        )
-    except (ValueError, KeyError) as e:
-        return f"Error: Invalid input or missing data. {str(e)}"
-    
-@app.route('/compare/<date>/<countries>')
-def compare(date, countries):
-    """This function compares COVID-19 stats for multiple countries using one date"""
-    try:
-        output = f"COVID-19 data for {date}:\n"
-        for country in countries.split(','):
-            cases, deaths = covid_stats.stats(country, date, date)
-            output += f"{country}: Cases={cases}, Deaths={deaths}\n"
-        return output
-    except (ValueError, KeyError) as e:
-        return f"Error: {str(e)}"
+@app.route('/stats', methods=['GET', 'POST'])
+def stats():
+    countries = ds.get_all_countries()  # Get countries from DB
+
+    if request.method == 'POST':
+        country = request.form.get('country')
+        beginning_date = request.form.get('beginning_date')
+        ending_date = request.form.get('ending_date')
+
+        try:
+            total_cases, total_deaths = covid_stats.stats(country, beginning_date, ending_date)
+            return render_template('stats.html', countries=countries, country=country,
+                                   start=beginning_date, end=ending_date,
+                                   cases=total_cases, deaths=total_deaths)
+        except (ValueError, KeyError) as e:
+            return render_template('404.html', error_message=str(e)), 404
+
+    return render_template('stats.html', countries=countries, country=None)
+
+@app.route('/compare', methods=['GET', 'POST'])
+def compare():
+    if request.method == 'POST':
+        date = request.form.get('date')
+        countries = request.form.get('countries')
+        try:
+            compare_data = covid_stats.compare(countries.split(','), date)
+            return render_template('compare.html', date=date, countries=countries, results=compare_data)
+        except (ValueError, KeyError) as e:
+            return render_template('404.html', error_message=str(e)), 404
+    return render_template('compare.html', results=None)
+
 @app.errorhandler(404)
 def page_not_found(e):
-    """Handle 404 errors with a custom message."""
-    
-    return (""
-    "<h1>Error 404: The requested resource was not found.</h1>"
-        "- To get COVID-19 statistics, use this URL format:"
-        "/stats/<country>/<beginning_date>/<ending_date>"
-        "Example:\n"
-        "/stats/USA/2020-03-01/2020-03-10<br>"
-        "- please use this format to compare: /compare///"
-        "\nExample:\n"
-        "/compare/2020-04-19/US,GB", 404)
-    
-    
-@app.route('/funfacts')
-def fun_facts():
-    """This function compares COVID-19 stats for multiple countries using one date"""
-    list_of_creators = ["Fenan", "Owen", "Anthony", "Daniel"]
-    for i in list_of_creators:
-        return_value += i + " is a computer scientist"
-    return return_value
+    return render_template('404.html', error_message="Page not found!"), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

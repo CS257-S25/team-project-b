@@ -1,7 +1,7 @@
 """This module provides functions to calculate COVID-19 statistics
 for given countries and date ranges using the DataSource class."""
 
-from datasource import DataSource
+from .datasource import DataSource
 
 # Create one shared database connection
 ds = DataSource()

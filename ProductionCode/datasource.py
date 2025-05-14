@@ -1,5 +1,5 @@
 import psycopg2
-import psql_Config as config
+from . import psql_Config as config
 
 class DataSource:
 
@@ -38,6 +38,14 @@ class DataSource:
         cursor.execute("SELECT * FROM bigTable WHERE Country =%s", ('Afghanistan',))
         value = cursor.fetchall()
         return value
+    def get_all_countries(self):
+        '''Returns a list of all country names from the bigTable.'''
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT DISTINCT Country FROM bigTable ORDER BY Country;")
+        countries = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+        return countries
+
     
     def get_stats(self, country, beginning_date, ending_date):
         '''bruh'''
