@@ -12,6 +12,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/stats">Stats</a></li>
             <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">help</a></li>
         </ul>
     </nav>
 
@@ -24,7 +25,7 @@
     <form method="post">
         <label for="country">Country:</label><br>
         <select id="country" name="country" required>
-            <option value="">--Select Country--</option>
+            <option value="">Select Country</option>
             {% for c in countries %}
                 <option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>
             {% endfor %}

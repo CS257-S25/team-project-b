@@ -83,6 +83,10 @@ section h3 {
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 4px;
+    color: #000000
+}
+.box:hover {
+    box-shadow: 0 2px 5px #ca6a11;
 }
 footer {
     background: #fff;
@@ -91,4 +95,29 @@ footer {
     text-align: center;
     font-size: 0.9rem;
     margin-top: auto;
+}
+
+/*------------------------------------------------style for Stats------------------------------------------------------------*/
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+select {
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/*------------------------------------------------style for help------------------------------------------------------------*/
+.help ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help li {
+    color: #412222;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin-bottom: 10px; 
+    line-height: 1.5;
 }

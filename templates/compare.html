@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+    <title>Compare COVID-19 Stats</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+</head>
+<body>
+
+    <nav>
+        <h1>COVID-19 Tracker</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">Help</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h2>Compare COVID-19 Stats by Country</h2>
+        <p>Select a date and multiple countries to view and compare cases and deaths.</p>
+    </header>
+
+    <section>
+        <form method="post">
+            <label for="week">Date (YYYY-MM-DD):</label>
+            <input type="date" id="week" name="week" required>
+
+            <label for="countries">Countries:</label>
+            <select id="countries" name="countries" multiple required>
+                {% for c in countries %}
+                    <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="button">Compare</button>
+        </form>
+    </section>
+
+    {% if result %}
+    <section class="box">
+        <h3>Results for {{ week }}</h3>
+        <pre>{{ result }}</pre>
+    </section>
+    {% endif %}
+
+    <footer>
+        <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
+    </footer>
+
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        new Choices('#countries', {
+            removeItemButton: true,
+            searchPlaceholderValue: 'Search countries...',
+            placeholderValue: 'Select countries'
+        });
+    </script>
+</body>
+</html>
