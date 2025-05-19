@@ -1,26 +1,49 @@
--- Drop in the correct order to avoid dependency issues
-DROP TABLE IF EXISTS covid;
-DROP TABLE IF EXISTS countries;
-DROP TABLE IF EXISTS report_dates;
+-- Drop tables if they already exist (for repeated runs)
+DROP TABLE IF EXISTS covid_data, dates, countries, staging_raw_data;
 
--- Table for countries
+CREATE TABLE staging_raw_data (
+    report_date TEXT,
+    country_code TEXT,
+    country_name TEXT,
+    cases INT,
+    deaths INT
+);
+
 CREATE TABLE countries (
-  country_id serial PRIMARY KEY,
-  country_code text,
-  country text
+    country_id SERIAL PRIMARY KEY,
+    country_code TEXT UNIQUE,
+    country_name TEXT
 );
 
--- Table for dates
-CREATE TABLE report_dates (
-  date_id serial PRIMARY KEY,
-  date_reported date
+CREATE TABLE dates (
+    date_id SERIAL PRIMARY KEY,
+    report_date DATE UNIQUE
 );
 
--- Table for covid stats
-CREATE TABLE covid (
-  id serial PRIMARY KEY,
-  date_id int REFERENCES report_dates(date_id),
-  country_id int REFERENCES countries(country_id),
-  new_cases int,
-  new_deaths int
+CREATE TABLE covid_data (
+    data_id SERIAL PRIMARY KEY,
+    country_id INT REFERENCES countries(country_id),
+    date_id INT REFERENCES dates(date_id),
+    cases INT,
+    deaths INT
 );
+INSERT INTO countries (country_code, country_name)
+SELECT DISTINCT country_code, country_name
+FROM staging_raw_data
+ON CONFLICT (country_code) DO NOTHING;
+
+INSERT INTO dates (report_date)
+SELECT DISTINCT TO_DATE(report_date, 'MM/DD/YY')
+FROM staging_raw_data
+ON CONFLICT (report_date) DO NOTHING;
+
+
+INSERT INTO covid_data (country_id, date_id, cases, deaths)
+SELECT
+    c.country_id,
+    d.date_id,
+    s.cases,
+    s.deaths
+FROM staging_raw_data s
+JOIN countries c ON s.country_code = c.country_code
+JOIN dates d ON TO_DATE(s.report_date, 'MM/DD/YY') = d.report_date;
