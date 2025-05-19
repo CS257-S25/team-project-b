@@ -32,22 +32,26 @@ def stats(country, beginning_date, ending_date):
     """Calculates total cases and deaths using closest available dates."""
     try:
         # Adjust dates to closest available
-        start_date = get_closest_date(beginning_date, country, before=False)
-        end_date = get_closest_date(ending_date, country, before=True)
+        start_date = DataSource.get_closest_date(beginning_date, country, before=False)
+        end_date = DataSource.get_closest_date(ending_date, country, before=True)
 
         if not start_date or not end_date:
             return None, None, None, None  # No valid range
 
-        cursor = ds.connection.cursor()
-        query = """
+        """cursor = ds.connection.cursor()
+        query = 
             SELECT SUM(New_cases), SUM(New_deaths)
             FROM bigTable
             WHERE Country = %s AND Date_reported BETWEEN %s AND %s;
-        """
+        
         cursor.execute(query, (country, start_date, end_date))
         result = cursor.fetchone()
-        cursor.close()
+        cursor.close()"""
 
+
+
+        result = DataSource.get_sum_between_dates(country, start_date)
+        
         total_cases = result[0] or 0
         total_deaths = result[1] or 0
 
@@ -64,15 +68,17 @@ def compare(countries, week):
     for country in countries:
         actual_date = get_closest_date(week, country, before=False)
         if actual_date:
-            cursor = ds.connection.cursor()
-            query = """
+            result = DataSource.get_sum_specific(country, actual_date)
+            
+            """cursor = ds.connection.cursor()
+            query = 
                 SELECT SUM(New_cases), SUM(New_deaths)
                 FROM bigTable
                 WHERE Country = %s AND Date_reported = %s;
-            """
+            
             cursor.execute(query, (country, actual_date))
             result = cursor.fetchone()
-            cursor.close()
+            cursor.close()"""
 
             total_cases = result[0] or 0
             total_deaths = result[1] or 0
