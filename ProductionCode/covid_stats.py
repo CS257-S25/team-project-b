@@ -36,14 +36,32 @@ def get_closest_date(target_date, country, before=True):
 
 
 def stats(country, beginning_date, ending_date):
-    """Calculate total cases and deaths for a country between two dates."""
-    beginning_date = to_date(beginning_date)
-    ending_date = to_date(ending_date)
+    """Calculates total cases and deaths using closest available dates."""
+    try:
+        # Adjust dates to closest available
+        start_date = get_closest_date(beginning_date, country, before=False)
+        end_date = get_closest_date(ending_date, country, before=True)
 
-    start = get_closest_date(beginning_date, country, before=False)
-    end = get_closest_date(ending_date, country, before=True)
+        if not start_date or not end_date:
+            return None, None, None, None  # No valid range
 
-    if not start or not end:
+        cursor = ds.connection.cursor()
+        query = """
+            SELECT SUM(New_cases), SUM(New_deaths)
+            FROM bigTable
+            WHERE Country = %s AND Date_reported BETWEEN %s AND %s;
+        """
+        cursor.execute(query, (country, start_date, end_date))
+        result = cursor.fetchone()
+        cursor.close()
+
+        total_cases = result[0] or 0
+        total_deaths = result[1] or 0
+
+        return total_cases, total_deaths, start_date, end_date
+
+    except Exception as e:
+        print("Error in stats():", e)
         return None, None, None, None
 
     data = ds.get_all_data()
@@ -67,18 +85,20 @@ def compare(countries, week):
     week = to_date(week)
 
     for country in countries:
-        date = get_closest_date(week, country, before=False)
-        if not date:
-            result += f"No data for {country}.\n\n"
-            continue
+        actual_date = get_closest_date(week, country, before=False)
+        if actual_date:
+            cursor = ds.connection.cursor()
+            query = """
+                SELECT SUM(New_cases), SUM(New_deaths)
+                FROM bigTable
+                WHERE Country = %s AND Date_reported = %s;
+            """
+            cursor.execute(query, (country, actual_date))
+            result = cursor.fetchone()
+            cursor.close()
 
-        cases = 0
-        deaths = 0
-
-        for row in data:
-            if row["Country"] == country and row["Date_reported"] == date:
-                cases += row["New_cases"] or 0
-                deaths += row["New_deaths"] or 0
+            total_cases = result[0] or 0
+            total_deaths = result[1] or 0
 
         if cases == 0 and deaths == 0:
             result += f"{country} on {date}: No cases or deaths.\n\n"
