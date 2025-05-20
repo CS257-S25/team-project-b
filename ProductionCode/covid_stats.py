@@ -68,7 +68,7 @@ def compare(countries, week):
     for country in countries:
         actual_date = get_closest_date(week, country, before=False)
         if actual_date:
-            result = DataSource.get_sum_specific(country, actual_date)
+            result = DataSource.get_sum_specific(country, week)
             
             """cursor = ds.connection.cursor()
             query = 
