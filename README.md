@@ -58,3 +58,10 @@ To run the acceptance tests, use the following command in the terminal:
 python3 -m unittest Tests/test_cl.py
 
 This will execute the tests and confirm whether the tool behaves as expected for the scenarios described in the user stories.
+
+### How our Website Enables Scanability, Satisficing, Muddling through
+Our Website is scanable because it has a clear and concise homepage that has clear headings that allows the user to quickly see where our commands are. Our pages are also very minimilistic which makes it easy to use.
+
+Satisficing. Our Website is satisficing because it allows the user to search what they want to do. We give them a list of countries for both our compare and stats methods and they can either choose or search up a country. We also provide a calendar for them to choose their date as a natural shortcut
+
+Muddling Through. We have a help page that allows the user to seek help understanding how to operate our website if they need help. We also have a lot of redunency built into our website. We tell the user which date is the earliest possible date and we also have a very minimilistic website which allows the user to muddle through on their own fairly easily. 
