@@ -4,10 +4,10 @@ from ProductionCode.datasource import DataSource
 
 app = Flask(__name__)
 ds = DataSource()
+
 @app.route('/')
 def homepage():
     return render_template('index.html')
-
 
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
@@ -35,7 +35,6 @@ def stats():
 
     return render_template('stats.html', countries=countries)
 
-
 @app.route('/compare', methods=['GET', 'POST'])
 def compare():
     countries = ds.get_all_countries()
@@ -43,19 +42,19 @@ def compare():
         selected_countries = request.form.getlist('countries')
         week = request.form.get('week')
 
-        comparison_result = covid_stats.compare(selected_countries, week)
+        comparison_result, chart_data = covid_stats.compare(selected_countries, week)
 
-        return render_template('compare.html', countries=countries, result=comparison_result, week=week)
+        return render_template('compare.html', countries=countries, result=comparison_result, week=week, chart_data=chart_data)
 
     return render_template('compare.html', countries=countries)
 
 @app.route('/help')
 def help_page():
     return render_template('help.html')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', error_message="Page not found!"), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5003)
- 

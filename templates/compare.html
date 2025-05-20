@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Compare COVID-19 Stats</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Choices.js -->
-    <link rel="stylesheet" href="static/styles.css" /> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js script -->
 </head>
 <body>
 
@@ -44,13 +45,45 @@
         <h3>Results for {{ week }}</h3>
         <pre>{{ result }}</pre>
     </section>
+
+    {% if chart_data %}
+    <section>
+        <canvas id="covidChart" width="600" height="300"></canvas>
+        <script>
+            const ctx = document.getElementById('covidChart').getContext('2d');
+            const covidChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ chart_data.labels | tojson }},
+                    datasets: [{
+                        label: 'Cases',
+                        data: {{ chart_data.cases | tojson }},
+                        backgroundColor: 'rgba(0, 128, 0, 0.6)' // green
+                    }, {
+                        label: 'Deaths',
+                        data: {{ chart_data.deaths | tojson }},
+                        backgroundColor: 'rgba(255, 0, 0, 0.6)' // red
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+        </script>
+    </section>
+    {% endif %}
     {% endif %}
 
     <footer>
         <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
     </footer>
 
-    <!-- Choices.js -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
         new Choices('#countries', {

@@ -14,7 +14,6 @@ def to_date(date_str):
     except ValueError:
         raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.")
 
-
 def get_closest_date(target_date, country, before=True):
     """Return closest available date for a country."""
     data = ds.get_all_data()
@@ -24,6 +23,10 @@ def get_closest_date(target_date, country, before=True):
     for row in data:
         if row["Country"] == country:
             row_date = row["Date_reported"]
+            # Ensure the row_date is a date object
+            if isinstance(row_date, datetime):
+                row_date = row_date.date()
+
             if before and row_date <= target_date:
                 dates.append(row_date)
             elif not before and row_date >= target_date:
@@ -38,15 +41,13 @@ def get_closest_date(target_date, country, before=True):
 def stats(country, beginning_date, ending_date):
     """Calculates total cases and deaths using closest available dates."""
     try:
-        # Adjust dates to closest available
         start_date = get_closest_date(beginning_date, country, before=False)
         end_date = get_closest_date(ending_date, country, before=True)
 
         if not start_date or not end_date:
-            return None, None, None, None  # No valid date range
+            return None, None, None, None
 
         result = ds.get_sum_between_dates(country, start_date, end_date)
-
         total_cases = result[0] or 0
         total_deaths = result[1] or 0
 
@@ -56,11 +57,14 @@ def stats(country, beginning_date, ending_date):
         print("Error in stats():", e)
         return None, None, None, None
 
-
 def compare(countries, week):
     """Compare total cases and deaths for each country on a given week."""
     output = ""
     week_date = to_date(week)
+
+    labels = []
+    cases = []
+    deaths = []
 
     for country in countries:
         actual_date = get_closest_date(week_date, country, before=False)
@@ -69,6 +73,10 @@ def compare(countries, week):
             total_cases = result[0] or 0
             total_deaths = result[1] or 0
 
+            labels.append(country)
+            cases.append(total_cases)
+            deaths.append(total_deaths)
+
             if total_cases == 0 and total_deaths == 0:
                 output += f"{country} on {actual_date}: No cases or deaths.\n\n"
             else:
@@ -76,4 +84,10 @@ def compare(countries, week):
         else:
             output += f"{country}: No data available on or after {week}.\n\n"
 
-    return output
+    chart_data = {
+        "labels": labels,
+        "cases": cases,
+        "deaths": deaths
+    }
+
+    return output, chart_data
