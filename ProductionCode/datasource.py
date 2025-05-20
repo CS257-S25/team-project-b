@@ -65,6 +65,25 @@ class DataSource:
             i += 1
         return results_list
     
+
+    def get_all_data(self):
+        '''Returns all rows from the bigTable.'''
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT Country, Date_reported, New_cases, New_deaths FROM bigTable")
+        rows = cursor.fetchall()
+        cursor.close()
+
+        # Convert results to list of dictionaries for easier use
+        data = []
+        for row in rows:
+            data.append({
+                "Country": row[0],
+                "Date_reported": row[1],
+                "New_cases": row[2],
+                "New_deaths": row[3]
+            })
+        return data
+
 if __name__ == "__main__":
     ds = DataSource()
     results = ds.get_stats("Afghanistan", "2023-06-18", "20203-08-06")

@@ -69,8 +69,8 @@ header h2 {
 
 section {
     padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 50%;
+    margin-left: 25%;
 }
 
 section h3 {
@@ -120,4 +120,8 @@ select {
     font-family:Georgia, 'Times New Roman', Times, serif;
     margin-bottom: 10px; 
     line-height: 1.5;
+}
+
+.compare-form {
+    width: 100%;
 }

@@ -1,93 +1,88 @@
-"""This module provides functions to calculate COVID-19 statistics
-for given countries and date ranges using the DataSource class."""
+"""Provides simple COVID-19 statistics functions."""
 
 from .datasource import DataSource
+from datetime import datetime, date
 
-# Create one shared database connection
 ds = DataSource()
 
-def get_closest_date(target_date, country, before=True):
-    """Get the closest available date for the country."""
+def to_date(date_str):
+    """Convert a string to a date object."""
+    if isinstance(date_str, date):
+        return date_str
     try:
-        cursor = ds.connection.cursor()
-        if before:
-            query = """
-                SELECT MAX(Date_reported) FROM bigTable
-                WHERE Country = %s AND Date_reported <= %s;
-            """
-        else:
-            query = """
-                SELECT MIN(Date_reported) FROM bigTable
-                WHERE Country = %s AND Date_reported >= %s;
-            """
-        cursor.execute(query, (country, target_date))
-        result = cursor.fetchone()
-        cursor.close()
-        return result[0] if result and result[0] else None
-    except Exception as e:
-        print("Error finding closest date:", e)
+        return datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.")
+
+        
+def get_closest_date(target_date, country, before=True):
+    """Return closest available date for a country."""
+    data = ds.get_all_data()
+    target_date = to_date(target_date)
+    dates = []
+
+    for row in data:
+        if row["Country"] == country:
+            row_date = row["Date_reported"]
+            if before and row_date <= target_date:
+                dates.append(row_date)
+            elif not before and row_date >= target_date:
+                dates.append(row_date)
+
+    if not dates:
         return None
 
+    return max(dates) if before else min(dates)
+
+
 def stats(country, beginning_date, ending_date):
-    """Calculates total cases and deaths using closest available dates."""
-    try:
-        # Adjust dates to closest available
-        start_date = get_closest_date(beginning_date, country, before=False)
-        end_date = get_closest_date(ending_date, country, before=True)
+    """Calculate total cases and deaths for a country between two dates."""
+    beginning_date = to_date(beginning_date)
+    ending_date = to_date(ending_date)
 
-        if not start_date or not end_date:
-            return None, None, None, None  # No valid range
+    start = get_closest_date(beginning_date, country, before=False)
+    end = get_closest_date(ending_date, country, before=True)
 
-        cursor = ds.connection.cursor()
-        query = """
-            SELECT SUM(New_cases), SUM(New_deaths)
-            FROM bigTable
-            WHERE Country = %s AND Date_reported BETWEEN %s AND %s;
-        """
-        cursor.execute(query, (country, start_date, end_date))
-        result = cursor.fetchone()
-        cursor.close()
-
-        total_cases = result[0] or 0
-        total_deaths = result[1] or 0
-
-        return total_cases, total_deaths, start_date, end_date
-
-    except Exception as e:
-        print("Error in stats():", e)
+    if not start or not end:
         return None, None, None, None
+
+    data = ds.get_all_data()
+    total_cases = 0
+    total_deaths = 0
+
+    for row in data:
+        if row["Country"] == country:
+            date = row["Date_reported"]
+            if start <= date <= end:
+                total_cases += row["New_cases"] or 0
+                total_deaths += row["New_deaths"] or 0
+
+    return total_cases, total_deaths, start, end
 
 
 def compare(countries, week):
-    """Compares stats for multiple countries on the closest available date."""
-    output = ""
+    """Compare total cases and deaths for each country on a given week."""
+    data = ds.get_all_data()
+    result = ""
+    week = to_date(week)
+
     for country in countries:
-        actual_date = get_closest_date(week, country, before=False)
-        if actual_date:
-            cursor = ds.connection.cursor()
-            query = """
-                SELECT SUM(New_cases), SUM(New_deaths)
-                FROM bigTable
-                WHERE Country = %s AND Date_reported = %s;
-            """
-            cursor.execute(query, (country, actual_date))
-            result = cursor.fetchone()
-            cursor.close()
+        date = get_closest_date(week, country, before=False)
+        if not date:
+            result += f"No data for {country}.\n\n"
+            continue
 
-            total_cases = result[0] or 0
-            total_deaths = result[1] or 0
+        cases = 0
+        deaths = 0
 
-            if week != actual_date:
-                note = f"(Closest available date: {actual_date})"
-            else:
-                note = ""
+        for row in data:
+            if row["Country"] == country and row["Date_reported"] == date:
+                cases += row["New_cases"] or 0
+                deaths += row["New_deaths"] or 0
 
-            output += (
-                f"Total cases in {country} on {actual_date}: {total_cases} {note}\n"
-                f"Total deaths in {country} on {actual_date}: {total_deaths}\n\n"
-            )
+        if cases == 0 and deaths == 0:
+            result += f"{country} on {date}: No cases or deaths.\n\n"
         else:
-            output += f"No data available for {country} near {week}\n\n"
+            result += f"{country} on {date}: {cases} cases, {deaths} deaths.\n\n"
 
-    return output
-
+    return result

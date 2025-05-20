@@ -3,6 +3,7 @@
     <title>Compare COVID-19 Stats</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <!-- Choices.js -->
+    <link rel="stylesheet" href="static/styles.css" /> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 </head>
 <body>
@@ -23,8 +24,8 @@
     </header>
 
     <section>
-        <form method="post">
-            <label for="week">Date (YYYY-MM-DD):</label>
+        <form method="post" class="compare-form">
+            <label for="week">Date</label>
             <input type="date" id="week" name="week" required>
 
             <label for="countries">Countries:</label>
