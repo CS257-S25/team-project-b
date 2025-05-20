@@ -46,11 +46,6 @@ def stats(country, beginning_date, ending_date):
             return None, None, None, None  # No valid range
 
         cursor = ds.connection.cursor()
-        query = """
-            SELECT SUM(New_cases), SUM(New_deaths)
-            FROM bigTable
-            WHERE Country = %s AND Date_reported BETWEEN %s AND %s;
-        """
         cursor.execute(query, (country, start_date, end_date))
         result = cursor.fetchone()
         cursor.close()
@@ -87,12 +82,8 @@ def compare(countries, week):
     for country in countries:
         actual_date = get_closest_date(week, country, before=False)
         if actual_date:
-            cursor = ds.connection.cursor()
-            query = """
-                SELECT SUM(New_cases), SUM(New_deaths)
-                FROM bigTable
-                WHERE Country = %s AND Date_reported = %s;
-            """
+            result = DataSource.get_sum_specific(country, week)
+            
             cursor.execute(query, (country, actual_date))
             result = cursor.fetchone()
             cursor.close()
