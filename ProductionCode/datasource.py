@@ -18,6 +18,7 @@ class DataSource:
             exit()
         return self.connection
     
+    
     def get_sum_between_dates(self, country, start_date, end_date):
         '''Returns the week, country and the number of new cases.'''
         cursor = self.connection.cursor()
