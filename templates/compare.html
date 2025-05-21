@@ -58,11 +58,11 @@
                     datasets: [{
                         label: 'Cases',
                         data: {{ chart_data.cases | tojson }},
-                        backgroundColor: 'rgba(0, 128, 0, 0.6)' 
+                        backgroundColor: 'rgba(0, 128, 0, 0.6)' // green
                     }, {
                         label: 'Deaths',
                         data: {{ chart_data.deaths | tojson }},
-                        backgroundColor: 'rgba(255, 0, 0, 0.6)' 
+                        backgroundColor: 'rgba(255, 0, 0, 0.6)' // red
                     }]
                 },
                 options: {
