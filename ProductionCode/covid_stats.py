@@ -38,8 +38,8 @@ def get_closest_date(target_date, country, before=True):
     return max(dates) if before else min(dates)
 
 
-def stats(country, beginning_date, ending_date):
-    """Calculates total cases and deaths using closest available dates."""
+def get_cases_and_deaths_stats(country, beginning_date, ending_date):
+    """Returns the total cases and deaths using closest available dates from a given beginning date and ending date."""
     try:
         start_date = get_closest_date(beginning_date, country, before=False)
         end_date = get_closest_date(ending_date, country, before=True)
