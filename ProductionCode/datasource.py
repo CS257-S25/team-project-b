@@ -219,10 +219,4 @@ class DataSource:
 
 if __name__ == "__main__":
     ds = DataSource()
-    results = ds.get_stats("Afghanistan", "2023-06-18", "20203-08-06")
-    cases_results = ds.get_week_country_and_new_cases("Afghanistan", "2023-08-06")
-    """results = ds.get_specific()"""
-    for i in results:
-        print(i)
-    print(cases_results[0][0])
     ds.connection.close()
