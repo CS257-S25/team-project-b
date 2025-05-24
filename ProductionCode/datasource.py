@@ -1,7 +1,10 @@
+'''Module to handle passwords for database connection'''
+import sys
 import psycopg2
-import ProductionCode.psqlConfig as config
+import ProductionCode.psql_Config as config
 
 class DataSource:
+    """Class to handle database connection and queries for covid data."""
 
     def __init__(self):
         '''Constructor that initiates connection to database'''
@@ -12,13 +15,14 @@ class DataSource:
         Returns the connection object.'''
 
         try:
-            self.connection = psycopg2.connect(database=config.database, user=config.user, password=config.password, host="localhost")
-        except Exception as e:
-            print("Connection error: ", e)
-            exit()
+            self.connection = psycopg2.connect(database=config.database,
+                                user=config.user, password=config.password, host="localhost")
+        except psycopg2.OperationalError as e:
+            sys.exit(f"""Unable to connect to the database. Error was {e}.
+                     Please check your connection settings.""")
         return self.connection
-    
-    
+
+
     def get_sum_between_dates(self, country, start_date, end_date):
         '''Returns the sum of new cases and new deaths for a specific country
            between a given start and end date.'''
@@ -39,9 +43,9 @@ class DataSource:
                 c.country_name = %s 
                 AND d.report_date BETWEEN %s AND %s
         """, (country, start_date, end_date,))
-        results = cursor.fetchone()
+        results_to_return = cursor.fetchone()
         cursor.close()
-        return results
+        return results_to_return
 
     def get_sum_specific(self, country, date): # Renamed 'week' parameter to 'date' for clarity
         '''Returns the sum of new cases and new deaths for a specific country
@@ -63,9 +67,9 @@ class DataSource:
                 c.country_name = %s 
                 AND d.report_date = %s
         """, (country, date,)) # Using 'date' parameter
-        results = cursor.fetchone()
+        results_returning = cursor.fetchone()
         cursor.close()
-        return results
+        return results_returning
 
     def get_closest_date(self, target_date, country, before=True):
         """Get the closest available date for the country."""
@@ -91,10 +95,11 @@ class DataSource:
             result = cursor.fetchone()
             cursor.close()
             return result[0] if result and result[0] else None
-        except Exception as e:
+
+        except psycopg2.OperationalError as e:
             print("Error finding closest date:", e)
             return None
-    
+
     def get_week_country_and_new_cases(self, country, date):
         '''Returns the new cases for a specific country on a specific date.'''
         cursor = self.connection.cursor()
@@ -113,10 +118,10 @@ class DataSource:
                 c.country_name = %s 
                 AND d.report_date = %s
         """, (country, date,))
-        results = cursor.fetchall()
+        result_to_return = cursor.fetchall()
         cursor.close() # Added cursor.close()
-        return results
-    
+        return result_to_return
+
     def get_week_country_and_new_deaths(self, country, date):
         '''Returns the new deaths for a specific country on a specific date.'''
         cursor = self.connection.cursor()
@@ -135,10 +140,10 @@ class DataSource:
                 c.country_name = %s 
                 AND d.report_date = %s
         """, (country, date,))
-        results = cursor.fetchall()
+        results_we_are_returning = cursor.fetchall()
         cursor.close() # Added cursor.close()
-        return results
-    
+        return results_we_are_returning
+
     def get_all_countries(self):
         '''Returns a list of all country names from the countries table.'''
         cursor = self.connection.cursor()
@@ -147,7 +152,7 @@ class DataSource:
         countries = [row[0] for row in cursor.fetchall()]
         cursor.close()
         return countries
-    
+
     def get_stats(self, country, beginning_date, ending_date):
         '''Gets the covid stats (country name, report date, cases, deaths)
            for a specific country within a date range.'''
@@ -171,14 +176,14 @@ class DataSource:
                 AND d.report_date > %s 
                 AND d.report_date < %s
         """, (country, beginning_date, ending_date))
-        
+
         # Directly return the fetched results as a list of tuples.
         # The previous Python loop was redundant as fetchall() already returns
         # data in a suitable format (list of tuples).
         value = cursor.fetchall()
         cursor.close()
         return value
-    
+
 
     def get_all_data(self):
         '''Returns all rows from the covid_data table along with country name and report date.'''
