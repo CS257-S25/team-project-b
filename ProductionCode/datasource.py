@@ -1,6 +1,6 @@
 '''Module to handle passwords for database connection'''
 import psycopg2
-import ProductionCode.psqlConfig as config
+import ProductionCode.psql_Config as config
 
 class DataSource:
     """Class to handle database connection and queries for covid data."""
