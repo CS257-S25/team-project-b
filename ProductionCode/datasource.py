@@ -1,7 +1,7 @@
 '''Module to handle passwords for database connection'''
+import sys
 import psycopg2
 import ProductionCode.psqlConfig as config
-import sys
 
 class DataSource:
     """Class to handle database connection and queries for covid data."""
@@ -18,7 +18,8 @@ class DataSource:
             self.connection = psycopg2.connect(database=config.database,
                                 user=config.user, password=config.password, host="localhost")
         except psycopg2.OperationalError as e:
-            sys.exit(f"Unable to connect to the database. Error was {e}. Please check your connection settings.")
+            sys.exit(f"""Unable to connect to the database. Error was {e}.
+                     Please check your connection settings.""")
         return self.connection
 
 
@@ -94,7 +95,7 @@ class DataSource:
             result = cursor.fetchone()
             cursor.close()
             return result[0] if result and result[0] else None
-        
+
         except psycopg2.OperationalError as e:
             print("Error finding closest date:", e)
             return None
