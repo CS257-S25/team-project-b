@@ -1,4 +1,4 @@
-'''import unittest
+import unittest
 # Correct import for MagicMock and patch from unittest.mock
 from unittest.mock import MagicMock, patch
 from ProductionCode import datasource
@@ -29,7 +29,7 @@ class TestDataSource(unittest.TestCase):
         # This ensures that when DataSource's __init__ calls self.connect(),
         # it receives the mocked connection.
         self.ds = datasource.DataSource()
-'''"""
+
     def test_get_sum_between_dates(self):
         '''Test the get_sum_between_dates function with expected return values.'''
         # Configure the mock cursor's fetchone to return a specific tuple of (cases, deaths)
@@ -125,59 +125,6 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
 
-
-if __name__ == '__main__':
-    unittest.main()"""
-import unittest
-from unittest.mock import patch, MagicMock
-from ProductionCode import datasource
-
-class TestDataSource(unittest.TestCase):
-    def setUp(self):
-        # Patch psycopg2.connect to avoid real DB connections
-        patcher = patch('psycopg2.connect')
-        self.addCleanup(patcher.stop)
-        self.mock_connect = patcher.start()
-
-        self.mock_conn = MagicMock()
-        self.mock_connect.return_value = self.mock_conn
-
-        self.ds = datasource.DataSource()
-
-    def test_connect_called(self):
-        self.mock_connect.assert_called_once()
-
-    def test_get_sum_between_dates_returns_values(self):
-        mock_cursor = MagicMock()
-        self.mock_conn.cursor.return_value = mock_cursor
-        mock_cursor.fetchone.return_value = (10, 5)
-
-        result = self.ds.get_sum_between_dates("CountryA", "2020-01-01", "2020-01-07")
-        self.assertEqual(result, (10, 5))
-        mock_cursor.execute.assert_called_once()
-        mock_cursor.close.assert_called_once()
-
-    def test_get_sum_between_dates_handles_none(self):
-        mock_cursor = MagicMock()
-        self.mock_conn.cursor.return_value = mock_cursor
-        mock_cursor.fetchone.return_value = (None, None)
-
-        result = self.ds.get_sum_between_dates("CountryA", "2020-01-01", "2020-01-07")
-        self.assertEqual(result, (None, None))
-
-    def test_get_all_data_returns_list(self):
-        mock_cursor = MagicMock()
-        self.mock_conn.cursor.return_value = mock_cursor
-        mock_cursor.fetchall.return_value = [
-            ('CountryA', '2020-01-01', 5, 0),
-            ('CountryA', '2020-01-02', 3, 1),
-        ]
-
-        result = self.ds.get_all_data()
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 2)
-        mock_cursor.execute.assert_called_once()
-        mock_cursor.close.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()
