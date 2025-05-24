@@ -1,10 +1,7 @@
 """Provides simple COVID-19 statistics functions."""
 
 from datetime import datetime, date
-from .datasource import DataSource
-
-ds = DataSource()
-
+from ProductionCode.datasource import DataSource
 
 def to_date(date_str):
     """Convert a string to a date object."""
@@ -13,18 +10,13 @@ def to_date(date_str):
     try:
         return datetime.strptime(date_str, "%Y-%m-%d").date()
     except ValueError:
-        raise ValueError(
-            f"Invalid date format: {date_str}. Expected YYYY-MM-DD."
-        )
+        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.")
 
+def get_closest_date(target_date, country, before=True, ds=None):
+    """Return closest available date for a country."""
+    if ds is None:
+        ds = DataSource()
 
-def get_closest_date(target_date, country, before=True):
-    """
-    Return closest available date for a country.
-
-    If `before` is True, find the latest date on or before `target_date`.
-    If `before` is False, find the earliest date on or after `target_date`.
-    """
     data = ds.get_all_data()
     target_date = to_date(target_date)
     dates = []
@@ -45,15 +37,14 @@ def get_closest_date(target_date, country, before=True):
 
     return max(dates) if before else min(dates)
 
+def get_cases_and_deaths_stats(country, beginning_date, ending_date, ds=None):
+    """Returns the total cases and deaths using closest available dates from a given beginning date and ending date."""
+    if ds is None:
+        ds = DataSource()
 
-def get_cases_and_deaths_stats(country, beginning_date, ending_date):
-    """
-    Return total cases and deaths using closest available dates
-    between beginning_date and ending_date.
-    """
     try:
-        start_date = get_closest_date(beginning_date, country, before=False)
-        end_date = get_closest_date(ending_date, country, before=True)
+        start_date = get_closest_date(beginning_date, country, before=False, ds=ds)
+        end_date = get_closest_date(ending_date, country, before=True, ds=ds)
 
         if not start_date or not end_date:
             return None, None, None, None
@@ -68,13 +59,11 @@ def get_cases_and_deaths_stats(country, beginning_date, ending_date):
         print("Error in get_cases_and_deaths_stats():", e)
         return None, None, None, None
 
+def compare(countries, week, ds=None):
+    """Compare total cases and deaths for each country on a given week."""
+    if ds is None:
+        ds = DataSource()
 
-def compare(countries, week):
-    """
-    Compare total cases and deaths for each country on a given week.
-
-    Returns formatted text and chart data.
-    """
     output = ""
     week_date = to_date(week)
 
@@ -83,7 +72,7 @@ def compare(countries, week):
     deaths = []
 
     for country in countries:
-        actual_date = get_closest_date(week_date, country, before=False)
+        actual_date = get_closest_date(week_date, country, before=False, ds=ds)
         if actual_date:
             result = ds.get_sum_specific(country, actual_date)
             total_cases = result[0] or 0
@@ -94,21 +83,16 @@ def compare(countries, week):
             deaths.append(total_deaths)
 
             if total_cases == 0 and total_deaths == 0:
-                output += (
-                    f"{country} on {actual_date}: No cases or deaths.\n\n"
-                )
+                output += f"{country} on {actual_date}: No cases or deaths.\n\n"
             else:
-                output += (
-                    f"{country} on {actual_date}: {total_cases} cases, "
-                    f"{total_deaths} deaths.\n\n"
-                )
+                output += f"{country} on {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"
         else:
             output += f"{country}: No data available on or after {week}.\n\n"
 
     chart_data = {
         "labels": labels,
         "cases": cases,
-        "deaths": deaths,
+        "deaths": deaths
     }
 
     return output, chart_data
