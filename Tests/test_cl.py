@@ -1,69 +1,62 @@
 import unittest
-from unittest.mock import patch
-import sys
 from io import StringIO
+import sys
 import cl
 
 class TestCL(unittest.TestCase):
-    """Unit tests for the cl.py command-line interface."""
+    """Tests for the command-line interface in cl.py."""
 
     def setUp(self):
-        """Set up mock sys.stdout for capturing print outputs."""
-        self.held_stdout = StringIO()
-        self.patcher = patch('sys.stdout', self.held_stdout)
-        self.patcher.start()
+        """Set up stdout redirection to capture print output."""
+        self.original_stdout = sys.stdout
+        self.captured_output = StringIO()
+        sys.stdout = self.captured_output
 
     def tearDown(self):
-        """Restore sys.stdout after each test."""
-        self.patcher.stop()
-        self.held_stdout.close()
+        """Reset stdout after each test."""
+        sys.stdout = self.original_stdout
 
-    @patch('ProductionCode.covid_stats.compare')
-    def test_compare_command_valid(self, mock_compare):
-        """Test the compare command with valid input."""
-        mock_compare.return_value = ("Mock comparison text", {"labels": [], "cases": [], "deaths": []})
+    def test_compare_command_valid(self):
+        """Test the compare command with valid arguments."""
         sys.argv = ['cl.py', 'compare', 'Afghanistan,Albania', '2020-01-01']
         cl.main()
-        output = self.held_stdout.getvalue()
-        self.assertIn("Mock comparison text", output)
+        output = self.captured_output.getvalue()
+        self.assertIn('Total cases in', output)
 
-    @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    def test_stats_command_valid(self, mock_stats):
-        """Test the stats command with valid input."""
-        mock_stats.return_value = (100, 5, '2020-01-01', '2020-01-12')
+    def test_stats_command_valid(self):
+        """Test the stats command with valid arguments."""
         sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01', '2020-01-12']
         cl.main()
-        output = self.held_stdout.getvalue()
-        self.assertIn("Total cases in Afghanistan", output)
-        self.assertIn("100", output)
-
-    def test_stats_command_invalid_args(self):
-        """Test the stats command with missing arguments."""
-        sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01']
-        cl.main()
-        output = self.held_stdout.getvalue()
-        self.assertIn("Usage:", output)
+        output = self.captured_output.getvalue()
+        self.assertIn('Total cases in', output)
 
     def test_compare_command_missing_args(self):
-        """Test the compare command with missing arguments."""
+        """Test compare command with missing arguments."""
         sys.argv = ['cl.py', 'compare', 'Afghanistan']
         cl.main()
-        output = self.held_stdout.getvalue()
+        output = self.captured_output.getvalue()
+        self.assertIn("Usage:", output)
+
+    def test_stats_command_missing_args(self):
+        """Test stats command with missing arguments."""
+        sys.argv = ['cl.py', 'stats', 'Afghanistan', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("Usage:", output)
+
+    def test_no_command(self):
+        """Test no command provided."""
+        sys.argv = ['cl.py']
+        cl.main()
+        output = self.captured_output.getvalue()
         self.assertIn("Usage:", output)
 
     def test_unknown_command(self):
         """Test an unknown command."""
         sys.argv = ['cl.py', 'foobar']
         cl.main()
-        output = self.held_stdout.getvalue()
+        output = self.captured_output.getvalue()
         self.assertIn("Invalid command", output)
-
-    def test_no_command(self):
-        """Test with no command provided."""
-        sys.argv = ['cl.py']
-        cl.main()
-        output = self.held_stdout.getvalue()
-        self.assertIn("Usage:", output)
 
 if __name__ == '__main__':
     unittest.main()
