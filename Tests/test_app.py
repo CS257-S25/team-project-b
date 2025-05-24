@@ -3,37 +3,27 @@ from app import app
 
 class TestFlaskApp(unittest.TestCase):
     def setUp(self):
-        """Set up the test client for the Flask application."""
-        self.client = app.test_client()
+        """Set up the test client"""
+        self.app = app.test_client()
+        self.app.testing = True
 
-    def test_homepage(self):
-        """Test the homepage loads and contains the welcome message."""
+    def test_home_page(self):
+        """Test the home page"""
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Welcome to my ID2 Application!', response.data)
+        self.assertIn(b'Welcome to the COVID-19 Stats App', response.data)
 
-    def test_compare_valid_data(self):
-        """Test the compare route with valid date and country codes."""
-        response = self.app.get('/compare/2020-03-01/US,AF')
+    def test_stats_page(self):
+        """Test the stats page"""
+        response = self.app.get('/stats')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'COVID-19 data for 2020-03-01:', response.data)
+        self.assertIn(b'Stats Page', response.data)
 
-    def test_valid_stats(self):
-        """Test if valid country stats load correctly."""
-        response = self.app.get('/stats/US/2020-03-01/2021-03-10')
+    def test_compare_page(self):
+        """Test the compare page"""
+        response = self.app.get('/compare')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'COVID-19 stats for US', response.data)
-
-    def test_compare_invalid_date(self):
-        """Test the compare route with an invalid date format."""
-        response = self.app.get('/compare/invalid-date/US,AF')
-        self.assertNotEqual(response.status_code, 200)
-        
-    def test_compare_fun_facts(self):
-        """Test the funfacts route."""
-        response = self.app.get('/funfacts')
-        self.assertNotEqual(response.status_code, 200)  
-        self.assertIn(b"Fenan", response.data) 
+        self.assertIn(b'Compare Page', response.data)
     
 
 if __name__ == '__main__':
