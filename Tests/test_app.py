@@ -4,7 +4,7 @@ from app import app
 class TestFlaskApp(unittest.TestCase):
     def setUp(self):
         """Set up the test client for the Flask application."""
-        self.app = app.test_client()
+        self.client = app.test_client()
 
     def test_homepage(self):
         """Test the homepage loads and contains the welcome message."""

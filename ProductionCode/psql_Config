@@ -1,6 +1,0 @@
-# PostgreSQL configuration for DataSource
-
-database = "teamb"
-user = "vazqueza"
-password = "fork255towel"
-host = "localhost"
