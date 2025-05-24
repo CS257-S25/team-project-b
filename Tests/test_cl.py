@@ -59,6 +59,6 @@ class TestCL(unittest.TestCase):
         cl.main()
         output = self.captured_output.getvalue()
         self.assertIn("Invalid command", output)
-        
+
 if __name__ == '__main__':
     unittest.main()
