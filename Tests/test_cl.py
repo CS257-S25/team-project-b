@@ -40,14 +40,21 @@ class TestCovidStats(unittest.TestCase):
         # Store original sys.stdout and sys.argv to restore them after each test
         self.original_stdout = sys.stdout
         self.original_argv = sys.argv
-
+    
+    def test_get_cell(self):
+        """"Test our print usage function"""
+        self.assertEqual(cl.print_usagel(), """Usage:
+python cl.py compare country1,country2,... date
+python cl.py stats country beginning_date ending_date
+""")
+        
     def tearDown(self):
         """Restore original stdout and argv after each test."""
         sys.stdout = self.original_stdout
         sys.argv = self.original_argv
 
     # Note: test_stats directly calls covid_stats.stats, which uses the mocked DataSource.
-    def test_stats(self):
+    def test_covidstats_get_cases_and_deaths_stats(self):
         """Test function for the stats function in covid_stats."""
         # The mock_ds_instance.get_sum_between_dates.return_value is already (0,0) from setUp.
         # The mock_ds_instance.get_closest_date.side_effect is also set up.
