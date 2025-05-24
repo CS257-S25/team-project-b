@@ -31,5 +31,5 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.get('/compare/invalid-date/US,AF')
         self.assertNotEqual(response.status_code, 200)
 
-    if __name__ == '__main__':
-        unittest.main()
+if __name__ == '__main__':
+    unittest.main()
