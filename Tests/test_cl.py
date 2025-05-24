@@ -43,6 +43,13 @@ class TestCL(unittest.TestCase):
         cl.main()
         output = self.captured_output.getvalue()
         self.assertIn('Total cases in', output)
+    
+    def test_stats_no_data(self):
+        """Test stats command with no data found."""
+        sys.argv = ['cl.py', 'stats', 'UnknownCountry', '2020-01-01', '2020-01-12']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("No data found for", output)
 
     def test_stats_command_missing_args(self):
         """Test stats command with missing arguments."""
