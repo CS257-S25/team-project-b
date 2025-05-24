@@ -1,3 +1,4 @@
+'''Modules to run our flask app'''
 from flask import Flask, render_template, request
 from ProductionCode import covid_stats
 from ProductionCode.datasource import DataSource
@@ -19,7 +20,7 @@ def stats():
         beginning_date = request.form.get('beginning_date')
         ending_date = request.form.get('ending_date')
 
-        total_cases, total_deaths, actual_start, actual_end = covid_stats.stats(
+        total_cases, total_deaths, actual_start, actual_end = covid_stats.get_cases_and_deaths_stats(
             country, beginning_date, ending_date
         )
 
@@ -47,7 +48,8 @@ def compare():
 
         comparison_result, chart_data = covid_stats.compare(selected_countries, week)
 
-        return render_template('compare.html', countries=countries, result=comparison_result, week=week, chart_data=chart_data)
+        return render_template('compare.html', countries=countries,
+                               result=comparison_result, week=week, chart_data=chart_data)
 
     return render_template('compare.html', countries=countries)
 
