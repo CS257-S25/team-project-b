@@ -21,7 +21,8 @@ def handle_compare(countries_arg, week):
 
 def handle_stats(country, beginning_date, ending_date):
     """Handles the stats command for one country"""
-    cases, deaths, actual_start, actual_end = covid_stats.stats(country, beginning_date, ending_date)
+    cases, deaths, actual_start, actual_end = covid_stats.stats(country,
+                                            beginning_date, ending_date)
     if cases is None:
         print(f"No data found for {country} in the given date range.")
     else:

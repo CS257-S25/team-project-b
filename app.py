@@ -7,10 +7,12 @@ ds = DataSource()
 
 @app.route('/')
 def homepage():
+    '''Homepage of our website'''
     return render_template('index.html')
 
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
+    '''Page to show the covid statistics of a country'''
     countries = ds.get_all_countries()
     if request.method == 'POST':
         country = request.form.get('country')
@@ -37,6 +39,7 @@ def stats():
 
 @app.route('/compare', methods=['GET', 'POST'])
 def compare():
+    '''Compare page for the covid statistic of multiple countries'''
     countries = ds.get_all_countries()
     if request.method == 'POST':
         selected_countries = request.form.getlist('countries')
@@ -50,11 +53,13 @@ def compare():
 
 @app.route('/help')
 def help_page():
+    '''Help page'''
     return render_template('help.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html', error_message="Page not found!"), 404
+    '''Error page for 404'''
+    return render_template('404.html', error_message=f"{e}, is the error. Page not found!"), 404
 
 if __name__ == '__main__':
     app.run()
