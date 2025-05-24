@@ -1,5 +1,7 @@
 import unittest
 from app import app
+from unittest.mock import patch, MagicMock
+
 
 class TestFlaskApp(unittest.TestCase):
     def setUp(self):
@@ -55,6 +57,21 @@ class TestFlaskApp(unittest.TestCase):
         response = self.client.get('/nonexistent')
         self.assertEqual(response.status_code, 404)
         self.assertIn(b'Page not found', response.data)
+        
+    
+    
+    
+    @patch('ProductionCode.datasource.DataSource.get_all_countries')
+    def test_stats_get(self, mock_get_all_countries):
+        mock_get_all_countries.return_value = ["USA", "Canada"]
+        response = self.client.get('/stats')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Select a country:', response.data)
+        self.assertIn(b'USA', response.data)
+        self.assertIn(b'Canada', response.data)
+
+    
+    
 
 if __name__ == '__main__':
     unittest.main()
