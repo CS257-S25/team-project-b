@@ -1,7 +1,12 @@
 import unittest
 from app import app
 from unittest.mock import patch, MagicMock
-
+import unittest
+from unittest.mock import patch, MagicMock
+from flask import Flask
+from flask.testing import FlaskClient
+from ProductionCode import covid_stats
+from ProductionCode.datasource import DataSource
 
 class TestFlaskApp(unittest.TestCase):
     def setUp(self):
@@ -61,23 +66,21 @@ class TestFlaskApp(unittest.TestCase):
     
     
     
-    @patch('ProductionCode.datasource.DataSource.get_all_countries')
-    def test_stats_get(self, mock_get_all_countries):
-        mock_get_all_countries.return_value = ["USA", "Canada"]
-        response = self.client.get('/stats')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Select a country:', response.data)
-        self.assertIn(b'USA', response.data)
-        self.assertIn(b'Canada', response.data)
+    def setUp(self):
+        self.app = app
+        self.client: FlaskClient = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
 
-
+    def tearDown(self):
+        self.app_context.pop()
 
     @patch('ProductionCode.datasource.DataSource.get_all_countries')
-    def test_homepage(self, mock_get_all_countries):
+    def test_homepage_get(self, mock_get_all_countries):
         mock_get_all_countries.return_value = ["USA", "Canada"]
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        # You might want to assert the content of the homepage if it's dynamic
+        self.assertIn(b'Welcome', response.data) # Adjust based on your homepage content
 
     @patch('ProductionCode.datasource.DataSource.get_all_countries')
     def test_stats_get(self, mock_get_all_countries):
@@ -88,11 +91,14 @@ class TestFlaskApp(unittest.TestCase):
         self.assertIn(b'USA', response.data)
         self.assertIn(b'Canada', response.data)
 
-    @patch('ProductionCode.datasource.DataSource.get_all_countries')
+    @patch('ProductionCode.datasource.DataSource')
     @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    def test_stats_post_data_found(self, mock_get_stats, mock_get_all_countries):
-        mock_get_all_countries.return_value = ["USA"]
+    def test_stats_post_data_found(self, mock_get_stats, MockDataSource):
+        mock_ds = MagicMock(spec=DataSource)
+        MockDataSource.return_value = mock_ds
+        mock_ds.get_all_countries.return_value = ["USA"]
         mock_get_stats.return_value = (1000, 50, "2023-01-05", "2023-01-20")
+
         response = self.client.post('/stats', data={
             'country': 'USA',
             'beginning_date': '2023-01-01',
@@ -103,11 +109,14 @@ class TestFlaskApp(unittest.TestCase):
         self.assertIn(b'Total deaths in USA from 2023-01-05 to 2023-01-20: 50', response.data)
         self.assertIn(b'Showing data from 2023-01-05 to 2023-01-20 (closest available dates).', response.data)
 
-    @patch('ProductionCode.datasource.DataSource.get_all_countries')
+    @patch('ProductionCode.datasource.DataSource')
     @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    def test_stats_post_no_data(self, mock_get_stats, mock_get_all_countries):
-        mock_get_all_countries.return_value = ["Canada"]
+    def test_stats_post_no_data(self, mock_get_stats, MockDataSource):
+        mock_ds = MagicMock(spec=DataSource)
+        MockDataSource.return_value = mock_ds
+        mock_ds.get_all_countries.return_value = ["Canada"]
         mock_get_stats.return_value = (None, None, None, None)
+
         response = self.client.post('/stats', data={
             'country': 'Canada',
             'beginning_date': '2023-02-01',
@@ -116,11 +125,14 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'No data found for Canada near the dates you selected.', response.data)
 
-    @patch('ProductionCode.datasource.DataSource.get_all_countries')
+    @patch('ProductionCode.datasource.DataSource')
     @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    def test_stats_post_exact_dates(self, mock_get_stats, mock_get_all_countries):
-        mock_get_all_countries.return_value = ["UK"]
+    def test_stats_post_exact_dates(self, mock_get_stats, MockDataSource):
+        mock_ds = MagicMock(spec=DataSource)
+        MockDataSource.return_value = mock_ds
+        mock_ds.get_all_countries.return_value = ["UK"]
         mock_get_stats.return_value = (500, 20, "2023-03-01", "2023-03-15")
+
         response = self.client.post('/stats', data={
             'country': 'UK',
             'beginning_date': '2023-03-01',
@@ -129,9 +141,7 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Total cases in UK from 2023-03-01 to 2023-03-15: 500', response.data)
         self.assertIn(b'Total deaths in UK from 2023-03-01 to 2023-03-15: 20', response.data)
-        self.assertNotIn(b'Showing data from', response.data) # Ensure no note about date adjustment
-
-    
+        self.assertNotIn(b'Showing data from', response.data)
     
 
 if __name__ == '__main__':
