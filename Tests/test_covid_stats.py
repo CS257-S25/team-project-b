@@ -46,42 +46,44 @@ class TestCovidStatsNoMock(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()"""
 import unittest
-from unittest.mock import MagicMock
-from datetime import date
+from unittest.mock import patch, MagicMock
 from ProductionCode import covid_stats
 
-class MockDS:
-    def get_all_data(self):
-        return [
-            {"Country": "Afghanistan", "Date_reported": date(2020, 3, 29), "New_cases": 67, "New_deaths": 2},
-            {"Country": "Afghanistan", "Date_reported": date(2020, 3, 30), "New_cases": 3, "New_deaths": 0},
-        ]
-
-    def get_sum_between_dates(self, country, start_date, end_date):
-        return (70, 2)
-
-    def get_sum_specific(self, country, date):
-        return (67, 2)
-
 class TestCovidStats(unittest.TestCase):
+    def setUp(self):
+        patcher = patch('ProductionCode.covid_stats.DataSource')
+        self.mock_ds_class = patcher.start()
+        self.addCleanup(patcher.stop)
+        self.mock_ds_instance = self.mock_ds_class.return_value
 
-    def test_get_closest_date_before(self):
-        ds = MockDS()
-        result = covid_stats.get_closest_date("2020-03-30", "Afghanistan", before=True, ds=ds)
-        self.assertEqual(result, date(2020, 3, 30))
+    def test_get_total_cases_and_deaths_normal(self):
+        self.mock_ds_instance.get_sum_between_dates.return_value = (1000, 200)
+        cases, deaths = covid_stats.get_total_cases_and_deaths("USA", "2021-01-01", "2021-01-10")
+        self.assertEqual(cases, 1000)
+        self.assertEqual(deaths, 200)
+        self.mock_ds_instance.get_sum_between_dates.assert_called_once_with("USA", "2021-01-01", "2021-01-10")
 
-    def test_get_cases_and_deaths_stats(self):
-        ds = MockDS()
-        result = covid_stats.get_cases_and_deaths_stats("Afghanistan", "2020-03-28", "2020-03-31", ds)
-        self.assertEqual(result, (70, 2, date(2020, 3, 29), date(2020, 3, 30)))
+    def test_get_total_cases_and_deaths_none_values(self):
+        # None values should become 0
+        self.mock_ds_instance.get_sum_between_dates.return_value = (None, None)
+        cases, deaths = covid_stats.get_total_cases_and_deaths("USA", "2021-01-01", "2021-01-10")
+        self.assertEqual(cases, 0)
+        self.assertEqual(deaths, 0)
 
-    def test_compare(self):
-        ds = MockDS()
-        output, chart_data = covid_stats.compare(["Afghanistan"], "2020-03-29", ds)
-        self.assertIn("Afghanistan on 2020-03-29", output)
-        self.assertEqual(chart_data["labels"], ["Afghanistan"])
-        self.assertEqual(chart_data["cases"], [67])
-        self.assertEqual(chart_data["deaths"], [2])
+    def test_calculate_case_fatality_rate_normal(self):
+        rate = covid_stats.calculate_case_fatality_rate(1000, 50)
+        self.assertAlmostEqual(rate, 5.0)
+
+    def test_calculate_case_fatality_rate_zero_cases(self):
+        # Should not divide by zero
+        rate = covid_stats.calculate_case_fatality_rate(0, 50)
+        self.assertEqual(rate, 0.0)
+
+    def test_format_summary_string_output(self):
+        summary = covid_stats.format_summary_string("USA", 1000, 50, 5.0)
+        expected = "COVID-19 summary for USA:\nTotal cases: 1000\nTotal deaths: 50\nCFR: 5.00%"
+        self.assertEqual(summary, expected)
 
 if __name__ == '__main__':
     unittest.main()
+

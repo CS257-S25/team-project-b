@@ -111,36 +111,46 @@ class TestCL(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()"""
 import unittest
-from unittest.mock import patch
-import ProductionCode.cl as cl
+from unittest.mock import patch, MagicMock
+import sys
+from ProductionCode import cl
 
 class TestCL(unittest.TestCase):
+    def setUp(self):
+        patcher = patch('ProductionCode.cl.DataSource')
+        self.mock_ds_class = patcher.start()
+        self.addCleanup(patcher.stop)
+        self.mock_ds = self.mock_ds_class.return_value
 
-    @patch('builtins.print')
-    def test_handle_compare_invalid(self, mock_print):
-        cl.handle_compare("A", "2020-03-29")
-        mock_print.assert_any_call("You must select between 2 and 5 countries.\n")
+    def test_main_summary_command_success(self):
+        args = ['cl.py', 'summary', 'USA', '2021-01-01', '2021-01-10']
+        with patch.object(sys, 'argv', args):
+            self.mock_ds.get_sum_between_dates.return_value = (1000, 50)
+            try:
+                cl.main()
+            except SystemExit:
+                self.fail("main() exited unexpectedly on valid args")
 
-    @patch('ProductionCode.covid_stats.compare')
-    @patch('builtins.print')
-    def test_handle_compare_valid(self, mock_print, mock_compare):
-        mock_compare.return_value = ("Comparison Output\n", {})
-        cl.handle_compare("A,B", "2020-03-29")
-        mock_print.assert_called_with("Comparison Output\n")
+    def test_main_summary_command_no_data(self):
+        args = ['cl.py', 'summary', 'USA', '2021-01-01', '2021-01-10']
+        with patch.object(sys, 'argv', args):
+            self.mock_ds.get_sum_between_dates.return_value = (None, None)
+            try:
+                cl.main()
+            except SystemExit:
+                self.fail("main() exited unexpectedly when no data")
 
-    @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    @patch('builtins.print')
-    def test_handle_stats_found(self, mock_print, mock_get_stats):
-        mock_get_stats.return_value = (100, 10, "2020-03-29", "2020-03-30")
-        cl.handle_stats("Afghanistan", "2020-03-29", "2020-03-30")
-        mock_print.assert_any_call("Total cases in Afghanistan from 2020-03-29 to 2020-03-30: 100")
+    def test_main_invalid_command(self):
+        args = ['cl.py', 'invalidcmd']
+        with patch.object(sys, 'argv', args):
+            with self.assertRaises(SystemExit):
+                cl.main()
 
-    @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
-    @patch('builtins.print')
-    def test_handle_stats_not_found(self, mock_print, mock_get_stats):
-        mock_get_stats.return_value = (None, None, None, None)
-        cl.handle_stats("Noland", "2020-03-29", "2020-03-30")
-        mock_print.assert_any_call("No data found for Noland in the given date range.")
+    def test_main_missing_arguments(self):
+        args = ['cl.py']
+        with patch.object(sys, 'argv', args):
+            with self.assertRaises(SystemExit):
+                cl.main()
 
 if __name__ == '__main__':
     unittest.main()
