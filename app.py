@@ -4,7 +4,6 @@ from ProductionCode import covid_stats
 from ProductionCode.datasource import DataSource
 
 app = Flask(__name__)
-ds = DataSource()
 
 @app.route('/')
 def homepage():
@@ -14,6 +13,7 @@ def homepage():
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
     '''Page to show the covid statistics of a country'''
+    ds = DataSource()
     countries = ds.get_all_countries()
     if request.method == 'POST':
         country = request.form.get('country')
@@ -41,6 +41,7 @@ def stats():
 @app.route('/compare', methods=['GET', 'POST'])
 def compare():
     '''Compare page for the covid statistic of multiple countries'''
+    ds = DataSource()
     countries = ds.get_all_countries()
     if request.method == 'POST':
         selected_countries = request.form.getlist('countries')
