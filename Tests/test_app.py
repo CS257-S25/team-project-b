@@ -75,7 +75,7 @@ from app import app
 
 class TestApp(unittest.TestCase):
     def setUp(self):
-        self.app = app_module.app.test_client()
+        self.app = app.test_client()
         self.app.testing = True
 
     def test_homepage(self):
