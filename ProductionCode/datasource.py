@@ -1,5 +1,5 @@
 import psycopg2
-from ProductionCode import psql_Config
+from ProductionCode import psql_Config as config
 
 class DataSource:
 
