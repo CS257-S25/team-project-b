@@ -45,45 +45,95 @@ class TestCovidStatsNoMock(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()"""
-import unittest
-from unittest.mock import patch, MagicMock
+# test_covid_stats.py
+import pytest
+from datetime import date
 from ProductionCode import covid_stats
 
-class TestCovidStats(unittest.TestCase):
-    def setUp(self):
-        patcher = patch('ProductionCode.covid_stats.DataSource')
-        self.mock_ds_class = patcher.start()
-        self.addCleanup(patcher.stop)
-        self.mock_ds_instance = self.mock_ds_class.return_value
+class DummyDS:
+    def __init__(self, all_data=None, sum_between=None, sum_specific=None):
+        self._all_data = all_data or []
+        self._sum_between = sum_between or (0, 0)
+        self._sum_specific = sum_specific or (0, 0)
+    def get_all_data(self):
+        return self._all_data
+    def get_sum_between_dates(self, country, start, end):
+        return self._sum_between
+    def get_sum_specific(self, country, date):
+        return self._sum_specific
 
-    def test_get_total_cases_and_deaths_normal(self):
-        self.mock_ds_instance.get_sum_between_dates.return_value = (1000, 200)
-        cases, deaths = covid_stats.get_total_cases_and_deaths("USA", "2021-01-01", "2021-01-10")
-        self.assertEqual(cases, 1000)
-        self.assertEqual(deaths, 200)
-        self.mock_ds_instance.get_sum_between_dates.assert_called_once_with("USA", "2021-01-01", "2021-01-10")
+def test_to_date_valid_and_invalid():
+    d = covid_stats.to_date("2020-01-01")
+    assert d == date(2020, 1, 1)
+    # Passing a date returns the same date
+    today = date.today()
+    assert covid_stats.to_date(today) == today
+    with pytest.raises(ValueError):
+        covid_stats.to_date("invalid-date")
 
-    def test_get_total_cases_and_deaths_none_values(self):
-        # None values should become 0
-        self.mock_ds_instance.get_sum_between_dates.return_value = (None, None)
-        cases, deaths = covid_stats.get_total_cases_and_deaths("USA", "2021-01-01", "2021-01-10")
-        self.assertEqual(cases, 0)
-        self.assertEqual(deaths, 0)
+def test_get_closest_date_before_and_after():
+    data = [
+        {"Country": "USA", "Date_reported": date(2020, 1, 1)},
+        {"Country": "USA", "Date_reported": date(2020, 1, 3)},
+        {"Country": "Canada", "Date_reported": date(2020, 1, 2)},
+    ]
+    ds = DummyDS(all_data=data)
 
-    def test_calculate_case_fatality_rate_normal(self):
-        rate = covid_stats.calculate_case_fatality_rate(1000, 50)
-        self.assertAlmostEqual(rate, 5.0)
+    # before=True, date <= target date
+    res = covid_stats.get_closest_date("2020-01-03", "USA", before=True, ds=ds)
+    assert res == date(2020, 1, 3)
 
-    def test_calculate_case_fatality_rate_zero_cases(self):
-        # Should not divide by zero
-        rate = covid_stats.calculate_case_fatality_rate(0, 50)
-        self.assertEqual(rate, 0.0)
+    # before=False, date >= target date
+    res = covid_stats.get_closest_date("2020-01-02", "USA", before=False, ds=ds)
+    assert res == date(2020, 1, 3)
 
-    def test_format_summary_string_output(self):
-        summary = covid_stats.format_summary_string("USA", 1000, 50, 5.0)
-        expected = "COVID-19 summary for USA:\nTotal cases: 1000\nTotal deaths: 50\nCFR: 5.00%"
-        self.assertEqual(summary, expected)
+    # No matching country
+    res = covid_stats.get_closest_date("2020-01-01", "Mexico", ds=ds)
+    assert res is None
 
-if __name__ == '__main__':
-    unittest.main()
+def test_get_cases_and_deaths_stats_normal_and_none():
+    data = [
+        {"Country": "USA", "Date_reported": date(2020, 1, 1)},
+        {"Country": "USA", "Date_reported": date(2020, 1, 10)},
+    ]
+    ds = DummyDS(all_data=data, sum_between=(100, 10))
+
+    cases, deaths, start, end = covid_stats.get_cases_and_deaths_stats("USA", "2020-01-01", "2020-01-10", ds=ds)
+    assert cases == 100
+    assert deaths == 10
+    assert start == date(2020, 1, 1)
+    assert end == date(2020, 1, 10)
+
+    # Simulate no data found for dates
+    ds_no_data = DummyDS(all_data=[])
+    cases, deaths, start, end = covid_stats.get_cases_and_deaths_stats("USA", "2020-01-01", "2020-01-10", ds=ds_no_data)
+    assert cases is None and deaths is None and start is None and end is None
+
+def test_compare_with_countries_and_edge_cases():
+    all_data = [
+        {"Country": "USA", "Date_reported": date(2020, 1, 7)},
+        {"Country": "Canada", "Date_reported": date(2020, 1, 7)},
+    ]
+    ds = DummyDS(all_data=all_data, sum_specific=(5, 1))
+
+    countries = ["USA", "Canada", "Mexico"]
+
+    output, chart_data = covid_stats.compare(countries, "2020-01-01", ds=ds)
+    assert "USA" in output
+    assert "Canada" in output
+    assert "Mexico" in output  # Mexico no data message
+    assert "labels" in chart_data
+    assert "cases" in chart_data
+    assert "deaths" in chart_data
+    assert set(chart_data["labels"]) == {"USA", "Canada"}
+
+def test_compare_handles_zero_cases_and_no_data():
+    ds = DummyDS(all_data=[{"Country": "USA", "Date_reported": date(2020, 1, 7)}],
+                 sum_specific=(0, 0))
+    output, _ = covid_stats.compare(["USA"], "2020-01-01", ds=ds)
+    assert "No cases or deaths" in output
+
+    ds_empty = DummyDS(all_data=[])
+    output, _ = covid_stats.compare(["USA"], "2020-01-01", ds=ds_empty)
+    assert "No data available" in output
 

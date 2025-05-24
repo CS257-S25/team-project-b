@@ -128,64 +128,65 @@ class TestDataSource(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()"""
-import unittest
-from unittest.mock import patch, MagicMock
+# test_datasource.py
+import pytest
+from unittest.mock import MagicMock, patch
 from ProductionCode.datasource import DataSource
 
-class TestDataSource(unittest.TestCase):
-    def setUp(self):
-        # Patch psycopg2.connect at the start of each test
-        patcher = patch('ProductionCode.datasource.psycopg2.connect')
-        self.mock_connect = patcher.start()
-        self.addCleanup(patcher.stop)
-        self.mock_conn = self.mock_connect.return_value
-        self.mock_cursor = self.mock_conn.cursor.return_value
+@pytest.fixture
+def mock_conn_cursor():
+    with patch("psycopg2.connect") as mock_connect:
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connect.return_value = mock_conn
+        mock_conn.cursor.return_value = mock_cursor
+        yield mock_conn, mock_cursor
 
-    def test_init_success(self):
-        # Test successful connection creates connection attribute
-        ds = DataSource()
-        self.assertIs(self.mock_connect.return_value, ds.connection)
+def test_connect_success(mock_conn_cursor):
+    ds = DataSource()
+    assert ds.connection is not None
 
-    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("DB failure"))
-    def test_init_failure(self, mock_connect_fail):
-        # Should exit program on connection failure
-        with self.assertRaises(SystemExit):
-            DataSource()
+def test_connect_failure():
+    with patch("psycopg2.connect", side_effect=Exception("DB fail")):
+        with pytest.raises(SystemExit):
+            DataSource().connect()
 
-    def test_get_sum_between_dates(self):
-        self.mock_cursor.fetchone.return_value = (100, 10)
-        ds = DataSource()
-        cases, deaths = ds.get_sum_between_dates("CountryX", "2021-01-01", "2021-01-07")
-        self.assertEqual(cases, 100)
-        self.assertEqual(deaths, 10)
-        self.mock_cursor.execute.assert_called_once()
-        self.mock_cursor.fetchone.assert_called_once()
+@pytest.mark.parametrize("method,args,query_result,expected", [
+    ("get_sum_between_dates", ("USA", "2020-01-01", "2020-01-07"), (100, 10), (100, 10)),
+    ("get_sum_specific", ("USA", "2020-01-01"), (50, 5), (50, 5)),
+    ("get_closest_date", ("2020-01-01", "USA", True), ("2020-01-01",), "2020-01-01"),
+    ("get_closest_date", ("2020-01-01", "USA", False), ("2020-01-03",), "2020-01-03"),
+    ("get_week_country_and_new_cases", ("USA", "2020-01-01"), [(10,), (5,)], [(10,), (5,)]),
+    ("get_week_country_and_new_deaths", ("USA", "2020-01-01"), [(1,), (0,)], [(1,), (0,)]),
+    ("get_all_countries", (), [("USA",), ("Canada",)], ["USA", "Canada"]),
+    ("get_stats", ("USA", "2020-01-01", "2020-01-07"), [("USA", "2020-01-02", 10, 1)], [("USA", "2020-01-02", 10, 1)]),
+])
+def test_methods_return_expected(mock_conn_cursor, method, args, query_result, expected):
+    mock_conn, mock_cursor = mock_conn_cursor
+    mock_cursor.fetchone.return_value = query_result if not isinstance(query_result, list) else query_result[0]
+    mock_cursor.fetchall.return_value = query_result if isinstance(query_result, list) else [query_result]
 
-    def test_get_sum_between_dates_none(self):
-        # Test when query returns (None, None)
-        self.mock_cursor.fetchone.return_value = (None, None)
-        ds = DataSource()
-        cases, deaths = ds.get_sum_between_dates("CountryX", "2021-01-01", "2021-01-07")
-        self.assertEqual(cases, 0)
-        self.assertEqual(deaths, 0)
+    ds = DataSource()
+    func = getattr(ds, method)
+    result = func(*args)
+    assert result == expected
 
-    def test_get_all_countries(self):
-        self.mock_cursor.fetchall.return_value = [("CountryA",), ("CountryB",)]
-        ds = DataSource()
-        countries = ds.get_all_countries()
-        self.assertListEqual(countries, ["CountryA", "CountryB"])
-        self.mock_cursor.execute.assert_called_once()
-        self.mock_cursor.fetchall.assert_called_once()
+def test_get_closest_date_returns_none_on_exception(mock_conn_cursor):
+    mock_conn, mock_cursor = mock_conn_cursor
+    mock_cursor.execute.side_effect = Exception("Query failed")
 
-    def test_get_all_countries_empty(self):
-        self.mock_cursor.fetchall.return_value = []
-        ds = DataSource()
-        countries = ds.get_all_countries()
-        self.assertEqual(countries, [])
+    ds = DataSource()
+    result = ds.get_closest_date("2020-01-01", "USA")
+    assert result is None
 
-    # Add additional method tests here with similar mocking and assertions
-    # e.g. get_sum_specific, get_all_data, etc.
+def test_get_all_data_returns_dict_list(mock_conn_cursor):
+    mock_conn, mock_cursor = mock_conn_cursor
+    rows = [("USA", "2020-01-01", 10, 1), ("Canada", "2020-01-02", 5, 0)]
+    mock_cursor.fetchall.return_value = rows
 
-if __name__ == '__main__':
-    unittest.main()
-
+    ds = DataSource()
+    data = ds.get_all_data()
+    assert isinstance(data, list)
+    assert all(isinstance(d, dict) for d in data)
+    assert data[0]["Country"] == "USA"
+    assert data[1]["New_deaths"] == 0

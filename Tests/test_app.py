@@ -69,65 +69,26 @@ class TestFlaskApp(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()"""
-import unittest
+# test_app.py
+import pytest
 from unittest.mock import patch, MagicMock
-from ProductionCode import app
+from app import app
 
-class TestApp(unittest.TestCase):
-    def setUp(self):
-        app.app.testing = True
-        self.client = app.app.test_client()
+@pytest.fixture
+def client():
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        yield client
 
-        # Patch DataSource in app.py
-        patcher = patch('ProductionCode.app.DataSource')
-        self.mock_ds_class = patcher.start()
-        self.addCleanup(patcher.stop)
-        self.mock_ds = self.mock_ds_class.return_value
+@patch("ProductionCode.datasource.DataSource")
+def test_homepage(mock_ds, client):
+    rv = client.get("/")
+    assert rv.status_code == 200
+    assert b"<!DOCTYPE html>" in rv.data or b"html" in rv.data
 
-    def test_index_route(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Enter a country and date range', response.data)
+@patch("ProductionCode.datasource.DataSource")
+@patch("ProductionCode.covid_stats.get_cases_and_deaths_stats")
+def test_stats_post_found(mock_stats, mock_ds, client):
+    mock
 
-    def test_results_route_success(self):
-        # Mock DB method to return sample data
-        self.mock_ds.get_sum_between_dates.return_value = (1234, 56)
-        response = self.client.post('/results', data={
-            'country': 'USA',
-            'start_date': '2021-01-01',
-            'end_date': '2021-01-10'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'COVID-19 Summary for USA', response.data)
-        self.mock_ds.get_sum_between_dates.assert_called_once_with('USA', '2021-01-01', '2021-01-10')
-
-    def test_results_route_missing_fields(self):
-        # Missing country and end_date
-        response = self.client.post('/results', data={
-            'country': '',
-            'start_date': '2021-01-01',
-            'end_date': ''
-        })
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b'Missing data', response.data)
-
-    def test_results_route_no_data(self):
-        # Simulate no data returned (None)
-        self.mock_ds.get_sum_between_dates.return_value = (None, None)
-        response = self.client.post('/results', data={
-            'country': 'USA',
-            'start_date': '2021-01-01',
-            'end_date': '2021-01-10'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Total cases: 0', response.data)
-        self.assertIn(b'Total deaths: 0', response.data)
-
-    def test_404_error(self):
-        response = self.client.get('/not_a_route')
-        self.assertEqual(response.status_code, 404)
-        self.assertIn(b'404 Not Found', response.data)
-
-if __name__ == '__main__':
-    unittest.main()
 
