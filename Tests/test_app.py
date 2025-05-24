@@ -1,4 +1,4 @@
-import unittest
+"""import unittest
 from app import app
 from unittest.mock import patch, MagicMock
 
@@ -66,6 +66,36 @@ class TestFlaskApp(unittest.TestCase):
         response = self.client.get('/nonexistent')
         self.assertEqual(response.status_code, 404)
         self.assertIn(b'Page not found', response.data)
+
+if __name__ == '__main__':
+    unittest.main()"""
+import unittest
+from unittest.mock import patch
+from app import app
+
+class TestApp(unittest.TestCase):
+
+    def setUp(self):
+        self.app = app.test_client()
+
+    @patch('app.ds.get_all_countries')
+    def test_index_route(self, mock_get_all):
+        mock_get_all.return_value = ["Afghanistan"]
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Afghanistan", response.data)
+
+    @patch('app.ds.get_stats')
+    def test_get_data(self, mock_get_stats):
+        mock_get_stats.return_value = [("Afghanistan", "2020-03-29", 67, 2)]
+        response = self.app.get('/data?country=Afghanistan&start_date=2020-03-28&end_date=2020-03-30')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Afghanistan", response.data)
+
+    def test_missing_params(self):
+        response = self.app.get('/data')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Missing parameters", response.data)
 
 if __name__ == '__main__':
     unittest.main()

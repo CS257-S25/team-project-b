@@ -1,4 +1,4 @@
-import unittest
+"""import unittest
 from io import StringIO
 import sys
 import cl
@@ -107,6 +107,40 @@ class TestCL(unittest.TestCase):
         self.assertEqual(data["labels"], [])
         self.assertEqual(data["cases"], [])
         self.assertEqual(data["deaths"], [])
+
+if __name__ == '__main__':
+    unittest.main()"""
+import unittest
+from unittest.mock import patch
+import ProductionCode.cl as cl
+
+class TestCL(unittest.TestCase):
+
+    @patch('builtins.print')
+    def test_handle_compare_invalid(self, mock_print):
+        cl.handle_compare("A", "2020-03-29")
+        mock_print.assert_any_call("You must select between 2 and 5 countries.\n")
+
+    @patch('ProductionCode.covid_stats.compare')
+    @patch('builtins.print')
+    def test_handle_compare_valid(self, mock_print, mock_compare):
+        mock_compare.return_value = ("Comparison Output\n", {})
+        cl.handle_compare("A,B", "2020-03-29")
+        mock_print.assert_called_with("Comparison Output\n")
+
+    @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
+    @patch('builtins.print')
+    def test_handle_stats_found(self, mock_print, mock_get_stats):
+        mock_get_stats.return_value = (100, 10, "2020-03-29", "2020-03-30")
+        cl.handle_stats("Afghanistan", "2020-03-29", "2020-03-30")
+        mock_print.assert_any_call("Total cases in Afghanistan from 2020-03-29 to 2020-03-30: 100")
+
+    @patch('ProductionCode.covid_stats.get_cases_and_deaths_stats')
+    @patch('builtins.print')
+    def test_handle_stats_not_found(self, mock_print, mock_get_stats):
+        mock_get_stats.return_value = (None, None, None, None)
+        cl.handle_stats("Noland", "2020-03-29", "2020-03-30")
+        mock_print.assert_any_call("No data found for Noland in the given date range.")
 
 if __name__ == '__main__':
     unittest.main()

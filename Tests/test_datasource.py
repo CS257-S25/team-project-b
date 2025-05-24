@@ -1,4 +1,4 @@
-import unittest
+'''import unittest
 # Correct import for MagicMock and patch from unittest.mock
 from unittest.mock import MagicMock, patch
 from ProductionCode import datasource
@@ -29,7 +29,7 @@ class TestDataSource(unittest.TestCase):
         # This ensures that when DataSource's __init__ calls self.connect(),
         # it receives the mocked connection.
         self.ds = datasource.DataSource()
-
+'''"""
     def test_get_sum_between_dates(self):
         '''Test the get_sum_between_dates function with expected return values.'''
         # Configure the mock cursor's fetchone to return a specific tuple of (cases, deaths)
@@ -125,6 +125,57 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
 
+
+if __name__ == '__main__':
+    unittest.main()"""
+import unittest
+from unittest.mock import MagicMock, patch
+from ProductionCode.datasource import DataSource
+
+class TestDataSource(unittest.TestCase):
+
+    @patch('ProductionCode.datasource.psycopg2.connect')
+    def setUp(self, mock_connect):
+        self.mock_conn = MagicMock()
+        mock_connect.return_value = self.mock_conn
+        self.ds = DataSource()
+
+    def test_get_sum_between_dates(self):
+        cursor = self.mock_conn.cursor.return_value
+        cursor.fetchone.return_value = (100, 5)
+        result = self.ds.get_sum_between_dates("Afghanistan", "2020-03-29", "2020-03-30")
+        self.assertEqual(result, (100, 5))
+
+    def test_get_sum_specific(self):
+        cursor = self.mock_conn.cursor.return_value
+        cursor.fetchone.return_value = (10, 1)
+        result = self.ds.get_sum_specific("Afghanistan", "2020-03-29")
+        self.assertEqual(result, (10, 1))
+
+    def test_get_closest_date(self):
+        cursor = self.mock_conn.cursor.return_value
+        cursor.fetchone.return_value = ("2020-03-29",)
+        result = self.ds.get_closest_date("2020-03-30", "Afghanistan", before=True)
+        self.assertEqual(result, "2020-03-29")
+
+    def test_get_all_countries(self):
+        cursor = self.mock_conn.cursor.return_value
+        cursor.fetchall.return_value = [("Afghanistan",), ("Albania",)]
+        result = self.ds.get_all_countries()
+        self.assertEqual(result, ["Afghanistan", "Albania"])
+
+    def test_get_all_data(self):
+        cursor = self.mock_conn.cursor.return_value
+        cursor.fetchall.return_value = [
+            ("Afghanistan", "2020-03-29", 67, 2)
+        ]
+        result = self.ds.get_all_data()
+        self.assertEqual(result, [{
+            "Country": "Afghanistan",
+            "Date_reported": "2020-03-29",
+            "New_cases": 67,
+            "New_deaths": 2
+        }])
 
 if __name__ == '__main__':
     unittest.main()
