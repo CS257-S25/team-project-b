@@ -71,7 +71,6 @@ if __name__ == '__main__':
     unittest.main()"""
 import unittest
 from unittest.mock import patch, MagicMock
-from ProductionCode import app as app_module
 
 class TestApp(unittest.TestCase):
     def setUp(self):
