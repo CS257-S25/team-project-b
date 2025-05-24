@@ -1,3 +1,5 @@
-database = 'teamb'
-user = 'teamb'
-password = 'fork255towel'
+"""Configuration for PostgreSQL connection."""
+
+DATABASE = 'teamb'
+USER = 'teamb'
+PASSWORD = 'fork255towel'
