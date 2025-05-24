@@ -6,6 +6,11 @@ class TestFlaskApp(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
 
+    def test_submit_post(self):
+        response = self.client.post('/stats', data={'country': 'Afghanistan', 'beginning_date': '2020-01-01', 'ending_date': '2020-01-12'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'<!doctype', response.data)  
+
     def test_homepage(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
