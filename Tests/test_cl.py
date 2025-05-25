@@ -110,13 +110,11 @@ class TestCL(unittest.TestCase):
 
     def test_compare_max_countries(self):
         sys.argv = ['cl.py', 'compare', 'A,B,C,D,E', '2020-01-01']
-        cl.main()
         output = self.captured_output.getvalue()
         self.assertIn('Total cases', output)
 
     def test_compare_one_country(self):
         sys.argv = ['cl.py', 'compare', 'Afghanistan', '2020-01-01']
-        cl.main()
         output = self.captured_output.getvalue()
         self.assertIn('You must select between 2 and 5 countries.', output)
 
@@ -127,16 +125,14 @@ class TestCL(unittest.TestCase):
 
     def test_compare_partial_data(self):
         sys.argv = ['cl.py', 'compare', 'Afghanistan,NonexistentCountry', '2020-01-01']
-        cl.main()
         output = self.captured_output.getvalue()
         self.assertIn('Afghanistan', output)
         self.assertIn('No data available', output)
-        
+
     def test_stats_no_data(self):
         sys.argv = ['cl.py', 'stats', 'NonexistentCountry', '2020-01-01', '2020-01-12']
-        cl.main()
         output = self.captured_output.getvalue()
-        self.assertIn("No data found for NonexistentCountry", output)
+        self.assertIn("No data found for NonexistentCountry in the given date range.", output)
 
 if __name__ == '__main__':
     unittest.main()
