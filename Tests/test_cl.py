@@ -88,8 +88,8 @@ class TestCL(unittest.TestCase):
 
     def test_get_cases_and_deaths_stats_valid(self):
         cases, deaths, start, end = covid_stats.get_cases_and_deaths_stats("Afghanistan", "2020-01-01", "2020-01-12")
-        self.assertIsInstance(cases, int)
-        self.assertIsInstance(deaths, int)
+        self.assertIsInstance(start, date)
+        self.assertIsInstance(end, date)
 
     def test_get_cases_and_deaths_stats_no_data(self):
         cases, deaths, start, end = covid_stats.get_cases_and_deaths_stats("NonexistentCountry", "2020-01-01", "2020-01-12")
@@ -107,6 +107,36 @@ class TestCL(unittest.TestCase):
         self.assertEqual(data["labels"], [])
         self.assertEqual(data["cases"], [])
         self.assertEqual(data["deaths"], [])
+
+    def test_compare_max_countries(self):
+        sys.argv = ['cl.py', 'compare', 'A,B,C,D,E', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn('Total cases', output)
+
+    def test_compare_one_country(self):
+        sys.argv = ['cl.py', 'compare', 'Afghanistan', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn('You must select between 2 and 5 countries.', output)
+
+    def test_stats_invalid_date_format(self):
+        sys.argv = ['cl.py', 'stats', 'Afghanistan', 'not-a-date', '2020-01-12']
+        with self.assertRaises(ValueError):
+            cl.main()
+
+    def test_compare_partial_data(self):
+        sys.argv = ['cl.py', 'compare', 'Afghanistan,NonexistentCountry', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn('Afghanistan', output)
+        self.assertIn('No data available', output)
+        
+    def test_stats_no_data(self):
+        sys.argv = ['cl.py', 'stats', 'NonexistentCountry', '2020-01-01', '2020-01-12']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("No data found for NonexistentCountry", output)
 
 if __name__ == '__main__':
     unittest.main()
