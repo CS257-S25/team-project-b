@@ -91,7 +91,27 @@ class TestApp(unittest.TestCase):
         self.assertIn('Showing data from 2020-01-02 to 2020-01-05', html)
         self.assertIn('100', html)
         self.assertIn('10', html)
-        
+    
+    @patch('app.covid_stats.compare')
+    @patch('app.DataSource')
+    def test_compare_post_with_mock_data(self, mock_ds, mock_compare):
+        mock_ds.return_value.get_all_countries.return_value = ['CountryA', 'CountryB']
+        mock_compare.return_value = (
+            {'CountryA': {'cases': 100}, 'CountryB': {'cases': 200}}, 
+            {'labels': ['Mon', 'Tue'], 'data': [50, 100]}
+        )
+
+        response = self.app.post('/compare', data={
+            'countries': ['CountryA', 'CountryB'],
+            'week': '2020-W01'
+        })
+
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        self.assertIn('CountryA', html)
+        self.assertIn('CountryB', html)
+        self.assertIn('100', html)
+
     """THIS IS NEW, MIGHT DELETE"""
 
     def test_compare_get(self):
