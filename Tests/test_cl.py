@@ -122,8 +122,9 @@ class TestCL(unittest.TestCase):
 
     def test_stats_invalid_date_format(self):
         sys.argv = ['cl.py', 'stats', 'Afghanistan', 'not-a-date', '2020-01-12']
-        with self.assertRaises(ValueError):
-            cl.main()
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("Error:", output)
 
     def test_compare_partial_data(self):
         sys.argv = ['cl.py', 'compare', 'Afghanistan,NonexistentCountry', '2020-01-01']
