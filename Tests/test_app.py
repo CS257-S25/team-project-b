@@ -1,4 +1,4 @@
-'''import unittest
+import unittest
 from app import app, DataSource
 import os
 from unittest.mock import patch
@@ -134,95 +134,5 @@ class TestApp(unittest.TestCase):
         self.assertIn('CountryB', html)
         self.assertIn('Total cases', html)
 
-if __name__ == '__main__':
-    unittest.main()'''
-import unittest
-from unittest.mock import patch
-from app import app
-
-class TestApp(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
-
-    @patch('app.covid_stats.get_countries')
-    @patch('app.covid_stats.get_country_stats')
-    def test_stats_post_valid(self, mock_get_country_stats, mock_get_countries):
-        mock_get_countries.return_value = ['CountryA']
-        mock_get_country_stats.return_value = {
-            'cases': 1000,
-            'deaths': 50,
-            'start': '2020-01-01',
-            'end': '2020-01-10'
-        }
-
-        response = self.app.post('/stats', data={
-            'country': 'CountryA',
-            'beginning_date': '2020-01-01',
-            'ending_date': '2020-01-10'
-        }, follow_redirects=True)
-
-        html = response.get_data(as_text=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Total Cases: 1000', html)
-        self.assertIn('Total Deaths: 50', html)
-        self.assertIn('Results for CountryA', html)
-
-    @patch('app.covid_stats.get_countries')
-    @patch('app.covid_stats.get_country_stats')
-    def test_stats_post_invalid_data(self, mock_get_country_stats, mock_get_countries):
-        mock_get_countries.return_value = ['FakeCountry']
-        mock_get_country_stats.return_value = None  # simulate no data
-
-        response = self.app.post('/stats', data={
-            'country': 'FakeCountry',
-            'beginning_date': '2020-01-01',
-            'ending_date': '2020-01-10'
-        })
-
-        html = response.get_data(as_text=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('FakeCountry', html)  # Confirm the country is in the dropdown
-        # We are not asserting a missing message since your template doesn't show one
-
-    @patch('app.covid_stats.get_countries')
-    @patch('app.covid_stats.get_country_stats')
-    def test_stats_post_with_note_about_dates(self, mock_get_country_stats, mock_get_countries):
-        mock_get_countries.return_value = ['CountryA']
-        mock_get_country_stats.return_value = {
-            'cases': 100,
-            'deaths': 10,
-            'start': '2020-01-02',
-            'end': '2020-01-05'
-        }
-
-        response = self.app.post('/stats', data={
-            'country': 'CountryA',
-            'beginning_date': '2020-01-01',
-            'ending_date': '2020-01-07'
-        })
-
-        html = response.get_data(as_text=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('From 2020-01-02 to 2020-01-05', html)
-
-    @patch('app.covid_stats.get_countries')
-    @patch('app.covid_stats.get_weekly_data_for_countries')
-    def test_compare_post_with_mock_data(self, mock_weekly_data, mock_countries):
-        mock_countries.return_value = ['CountryA', 'CountryB']
-        mock_weekly_data.return_value = {
-            'CountryA': {'cases': 100, 'deaths': 5},
-            'CountryB': {'cases': 200, 'deaths': 10}
-        }
-
-        response = self.app.post('/compare', data={
-            'week': '2021-05-01',
-            'countries': ['CountryA', 'CountryB']
-        })
-
-        html = response.get_data(as_text=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Results for 2021-05-01', html)
-        self.assertIn('CountryA', html)
-        self.assertIn('CountryB', html)
 if __name__ == '__main__':
     unittest.main()
