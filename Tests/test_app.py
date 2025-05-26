@@ -60,7 +60,7 @@ class TestApp(unittest.TestCase):
         self.assertIn('15', html)  # Confirmed on 2020-01-02
         self.assertIn('2', html)   # Deaths on 2020-01-02
 
-    """"THIS IS NEW, MIGHT DELETE"""
+    """" vvv THIS IS NEW, MIGHT DELETE vvv """
 #Helper function for the tests
     def post_stats(self, country, beginning_date, ending_date):
         return self.app.post('/stats', data={
@@ -114,7 +114,7 @@ class TestApp(unittest.TestCase):
         self.assertIn('CountryB', html)
         self.assertIn('100', html)
 
-    """THIS IS NEW, MIGHT DELETE"""
+    """ ^^^ THIS IS NEW, MIGHT DELETE ^^^ """
 
     def test_compare_get(self):
         """Test GET request to /compare returns countries."""
