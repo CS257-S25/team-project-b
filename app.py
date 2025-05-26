@@ -18,9 +18,9 @@ def stats():
         beginning_date = request.form.get('beginning_date')
         ending_date = request.form.get('ending_date')
 
-        total_cases, total_deaths, actual_start, actual_end = 
-        covid_stats.get_cases_and_deaths_stats(
-            country, beginning_date, ending_date, ds=ds)
+        total_cases, total_deaths, actual_start, actual_end = (
+            covid_stats.get_cases_and_deaths_stats(
+            country, beginning_date, ending_date, ds=ds))
 
         if total_cases is None:
             error = f"No data found for {country} near the dates you selected."
@@ -46,8 +46,8 @@ def compare():
 
         comparison_result, chart_data = covid_stats.compare(selected_countries, week, ds=ds)
 
-        return render_template('compare.html', countries=countries, 
-        result=comparison_result, week=week, chart_data=chart_data)
+        return render_template(
+            'compare.html', countries=countries, result=comparison_result, week=week, chart_data=chart_data)
 
     return render_template('compare.html', countries=countries)
 
