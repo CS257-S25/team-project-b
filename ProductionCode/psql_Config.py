@@ -1,3 +1,5 @@
-database = 'teamb'
-user = 'teamb'
-password = 'fork255towel'
+"""Configuration file."""
+
+DATABASE = 'teamb'
+USER = 'teamb'
+PASSWORD = 'fork255towel'
