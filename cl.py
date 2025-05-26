@@ -36,14 +36,21 @@ def command(args):
         return
 
     command_arg = args[0]
-    if command_arg == "compare" and len(args) == 3:
-        handle_compare(args[1], args[2])
-    elif command_arg == "stats" and len(args) == 4:
-        handle_stats(args[1], args[2], args[3])
-    else:
-        print("Invalid command or wrong number of arguments.\n")
-        print_usage()
+    try: 
+        if command_arg == "compare" and len(args) == 3:
+            handle_compare(args[1], args[2])
+        elif command_arg == "stats" and len(args) == 4:
+            handle_stats(args[1], args[2], args[3])
+        else:
+            print("Invalid command or wrong number of arguments.\n")
+            print_usage()
 
+        command_arg = args[0]
+    except ValueError as ve:
+        print(f"Error: {ve}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        
 def main():
     """Entry point for CLI"""
     args = sys.argv[1:]
