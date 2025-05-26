@@ -1,6 +1,7 @@
 import unittest
 from app import app, DataSource
 import os
+from unittest.mock import patch
 
 class TestApp(unittest.TestCase):
     """Unit tests for Flask application routes and logic."""
@@ -58,16 +59,40 @@ class TestApp(unittest.TestCase):
         self.assertIn('Total deaths', html)
         self.assertIn('15', html)  # Confirmed on 2020-01-02
         self.assertIn('2', html)   # Deaths on 2020-01-02
+    
+    """THIS IS NEW, MIGHT DELETE"""
 
-    def test_stats_post_invalid_country(self):
-        """Test POST to /stats with a fake country."""
+    @patch('app.covid_stats.get_cases_and_deaths_stats')
+    @patch('app.DataSource')
+    def test_stats_post_invalid_data(self, mock_ds, mock_get_stats):
+        mock_ds.return_value.get_all_countries.return_value = ['FakeCountry']
+        mock_get_stats.return_value = (None, None, None, None)  # Simulate no data
         response = self.app.post('/stats', data={
             'country': 'FakeCountry',
+            'beginning_date': '2020-01-01',
+            'ending_date': '2020-01-02'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('No data found for FakeCountry', response.get_data(as_text=True))
+
+    @patch('app.covid_stats.get_cases_and_deaths_stats')
+    @patch('app.DataSource')
+    def test_stats_post_with_note_about_dates(self, mock_ds, mock_get_stats):
+        mock_ds.return_value.get_all_countries.return_value = ['CountryA']
+        mock_get_stats.return_value = (100, 10, '2020-01-02', '2020-01-05')  # Different from request
+
+        response = self.app.post('/stats', data={
+            'country': 'CountryA',
             'beginning_date': '2020-01-01',
             'ending_date': '2020-01-10'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertIn('No data found', response.get_data(as_text=True))
+        html = response.get_data(as_text=True)
+        self.assertIn('Showing data from 2020-01-02 to 2020-01-05', html)
+        self.assertIn('100', html)
+        self.assertIn('10', html)
+        
+    """THIS IS NEW, MIGHT DELETE"""
 
     def test_compare_get(self):
         """Test GET request to /compare returns countries."""
