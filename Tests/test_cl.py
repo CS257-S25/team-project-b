@@ -16,11 +16,13 @@ class TestCL(unittest.TestCase):
         sys.stdout = self.original_stdout
 
     # ----- CLI Tests -----
-    def test_compare_command_valid(self):
-        with patch.object(sys, 'argv', ['cl.py', 'compare', 'Afghanistan,Albania', '2020-01-01']):
-            cl.main()
-            output = self.captured_output.getvalue()
-            self.assertIn('Total cases', output)
+    #THIS IS NEW, MIGHT DELETE
+    @patch('ProductionCode.covid_stats.compare', return_value=("Total cases in Afghanistan and Albania", {'labels': ['Afghanistan', 'Albania']}))
+    def test_compare_command_valid_mocked(self, mock_compare):
+        sys.argv = ['cl.py', 'compare', 'Afghanistan,Albania', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn('Total cases in Afghanistan and Albania', output)
 
     def test_compare_command_missing_args(self):
         sys.argv = ['cl.py', 'compare', 'Afghanistan']
