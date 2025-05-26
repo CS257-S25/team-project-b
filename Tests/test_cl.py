@@ -36,6 +36,13 @@ class TestCL(unittest.TestCase):
         output = self.captured_output.getvalue()
         self.assertIn("Invalid command", output)
         self.assertIn("Usage:", output)
+    
+    def test_stats_command_missing_args_extra(self): # THIS IS NEW, MIGHT DELETE
+        sys.argv = ['cl.py', 'stats', 'Afghanistan']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("Invalid command", output)
+        self.assertIn("Usage:", output)
 
     def test_compare_command_too_many_countries(self):
         sys.argv = ['cl.py', 'compare', 'A,B,C,D,E,F', '2020-01-01']
