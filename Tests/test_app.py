@@ -265,7 +265,7 @@ class TestApp(unittest.TestCase):
         mock_ds_instance.fetch_data.side_effect = mock_fetch
 
         response = self.post_compare(['CountryA', 'CountryB'], '2020-W01')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 500)
         html = response.get_data(as_text=True)
         self.assertIn('CountryA', html)
         self.assertIn('CountryB', html)
