@@ -4,6 +4,7 @@ import sys
 import cl
 from datetime import date
 from ProductionCode import covid_stats
+from unittest.mock import patch
 
 class TestCL(unittest.TestCase):
     def setUp(self):
@@ -16,10 +17,10 @@ class TestCL(unittest.TestCase):
 
     # ----- CLI Tests -----
     def test_compare_command_valid(self):
-        sys.argv = ['cl.py', 'compare', 'Afghanistan,Albania', '2020-01-01']
-        cl.main()
-        output = self.captured_output.getvalue()
-        self.assertIn('Total cases', output)
+        with patch.object(sys, 'argv', ['cl.py', 'compare', 'Afghanistan,Albania', '2020-01-01']):
+            cl.main()
+            output = self.captured_output.getvalue()
+            self.assertIn('Total cases', output)
 
     def test_compare_command_missing_args(self):
         sys.argv = ['cl.py', 'compare', 'Afghanistan']
