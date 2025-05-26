@@ -59,19 +59,28 @@ class TestApp(unittest.TestCase):
         self.assertIn('Total deaths', html)
         self.assertIn('15', html)  # Confirmed on 2020-01-02
         self.assertIn('2', html)   # Deaths on 2020-01-02
-    
-    """THIS IS NEW, MIGHT DELETE"""
+
+    """"THIS IS NEW, MIGHT DELETE"""
+#Helper function for the tests
+    def post_stats(self, country, beginning_date, ending_date):
+        return self.app.post('/stats', data={
+            'country': country,
+            'beginning_date': beginning_date,
+            'ending_date': ending_date
+        })
+
+    def post_compare(self, countries, week):
+        return self.app.post('/compare', data={
+            'countries': countries,
+            'week': week
+        })
 
     @patch('app.covid_stats.get_cases_and_deaths_stats')
     @patch('app.DataSource')
     def test_stats_post_invalid_data(self, mock_ds, mock_get_stats):
         mock_ds.return_value.get_all_countries.return_value = ['FakeCountry']
         mock_get_stats.return_value = (None, None, None, None)  # Simulate no data
-        response = self.app.post('/stats', data={
-            'country': 'FakeCountry',
-            'beginning_date': '2020-01-01',
-            'ending_date': '2020-01-02'
-        })
+        response = self.post_stats('FakeCountry', '2020-01-01', '2020-01-02')
         self.assertEqual(response.status_code, 200)
         self.assertIn('No data found for FakeCountry', response.get_data(as_text=True))
 
@@ -81,30 +90,23 @@ class TestApp(unittest.TestCase):
         mock_ds.return_value.get_all_countries.return_value = ['CountryA']
         mock_get_stats.return_value = (100, 10, '2020-01-02', '2020-01-05')  # Different from request
 
-        response = self.app.post('/stats', data={
-            'country': 'CountryA',
-            'beginning_date': '2020-01-01',
-            'ending_date': '2020-01-10'
-        })
+        response = self.post_stats('CountryA', '2020-01-01', '2020-01-10')
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
         self.assertIn('Showing data from 2020-01-02 to 2020-01-05', html)
         self.assertIn('100', html)
         self.assertIn('10', html)
-    
+
     @patch('app.covid_stats.compare')
     @patch('app.DataSource')
     def test_compare_post_with_mock_data(self, mock_ds, mock_compare):
         mock_ds.return_value.get_all_countries.return_value = ['CountryA', 'CountryB']
         mock_compare.return_value = (
-            {'CountryA': {'cases': 100}, 'CountryB': {'cases': 200}}, 
+            {'CountryA': {'cases': 100}, 'CountryB': {'cases': 200}},
             {'labels': ['Mon', 'Tue'], 'data': [50, 100]}
         )
 
-        response = self.app.post('/compare', data={
-            'countries': ['CountryA', 'CountryB'],
-            'week': '2020-W01'
-        })
+        response = self.post_compare(['CountryA', 'CountryB'], '2020-W01')
 
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
