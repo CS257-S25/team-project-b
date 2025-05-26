@@ -11,9 +11,12 @@ class TestCL(unittest.TestCase):
         self.original_stdout = sys.stdout
         self.captured_output = StringIO()
         sys.stdout = self.captured_output
+        sys.stdout = self.captured_output
+        self.original_argv = sys.argv[:]
 
     def tearDown(self):
         sys.stdout = self.original_stdout
+        sys.argv = self.original_argv
 
     # ----- CLI Tests -----
     #THIS IS NEW, MIGHT DELETE
@@ -50,6 +53,12 @@ class TestCL(unittest.TestCase):
         output = self.captured_output.getvalue()
         self.assertIn("Invalid command or wrong number of arguments", output)
         self.assertIn("Usage:", output)
+
+    def test_compare_command_empty_country_list(self): #THIS IS NEW, MIGHT DELETE
+        sys.argv = ['cl.py', 'compare', '', '2020-01-01']
+        cl.main()
+        output = self.captured_output.getvalue()
+        self.assertIn("You must select between 2 and 5 countries.", output)
 
     def test_compare_command_too_many_countries(self):
         sys.argv = ['cl.py', 'compare', 'A,B,C,D,E,F', '2020-01-01']
