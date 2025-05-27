@@ -1,10 +1,10 @@
-"""import unittest
+import unittest
 # Correct import for MagicMock and patch from unittest.mock
 from unittest.mock import MagicMock, patch
 from ProductionCode import datasource
 from datetime import date # Import date for mocking date objects
 
-"""'''
+
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
 
@@ -29,7 +29,7 @@ class TestDataSource(unittest.TestCase):
         # This ensures that when DataSource's __init__ calls self.connect(),
         # it receives the mocked connection.
         self.ds = datasource.DataSource()
-'''"""
+
     def test_get_sum_between_dates(self):
         '''Test the get_sum_between_dates function with expected return values.'''
         # Configure the mock cursor's fetchone to return a specific tuple of (cases, deaths)
@@ -124,104 +124,6 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, expected_data)
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
-
-
-if __name__ == '__main__':
-    unittest.main()"""
-import unittest
-from unittest.mock import MagicMock, patch
-from datetime import date
-from ProductionCode import datasource
-
-
-@patch('ProductionCode.datasource.psycopg2.connect')
-class TestDataSource(unittest.TestCase):
-    """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
-
-    def setUp(self):
-        """Patch is applied at the class level. This runs before each test."""
-        patcher = patch('ProductionCode.datasource.psycopg2.connect')
-        self.addCleanup(patcher.stop)
-        self.mock_connect = patcher.start()
-
-        # Mock connection and cursor
-        self.mock_conn = MagicMock()
-        self.mock_cursor = MagicMock()
-        self.mock_conn.cursor.return_value.__enter__.return_value = self.mock_cursor
-        self.mock_connect.return_value = self.mock_conn
-
-        # Instantiate the datasource (will use mocked connection)
-        self.ds = datasource.DataSource()
-
-    def test_get_sum_between_dates(self):
-        self.mock_cursor.fetchone.return_value = (100, 5)
-        result = self.ds.get_sum_between_dates("Afghanistan", "2020-01-01", "2020-01-12")
-        self.assertEqual(result, (100, 5))
-
-    def test_get_sum_specific(self):
-        self.mock_cursor.fetchone.return_value = (50, 2)
-        result = self.ds.get_sum_specific("Afghanistan", "2020-01-05")
-        self.assertEqual(result, (50, 2))
-
-    def test_get_closest_date_before_true(self):
-        self.mock_cursor.fetchone.return_value = (date(2020, 1, 1),)
-        result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=True)
-        self.assertEqual(result, date(2020, 1, 1))
-
-    def test_get_closest_date_before_false(self):
-        self.mock_cursor.fetchone.return_value = (date(2020, 1, 10),)
-        result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=False)
-        self.assertEqual(result, date(2020, 1, 10))
-
-    def test_get_closest_date_none(self):
-        self.mock_cursor.fetchone.return_value = (None,)
-        result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
-        self.assertIsNone(result)
-
-    def test_get_week_country_and_new_cases(self):
-        self.mock_cursor.fetchall.return_value = [(10,), (20,), (30,)]
-        result = self.ds.get_week_country_and_new_cases("Afghanistan", "2020-01-05")
-        self.assertEqual(result, [(10,), (20,), (30,)])
-
-    def test_get_week_country_and_new_deaths(self):
-        self.mock_cursor.fetchall.return_value = [(1,), (2,), (3,)]
-        result = self.ds.get_week_country_and_new_deaths("Afghanistan", "2020-01-05")
-        self.assertEqual(result, [(1,), (2,), (3,)])
-
-    def test_get_all_countries(self):
-        self.mock_cursor.fetchall.return_value = [("Afghanistan",), ("USA",)]
-        result = self.ds.get_all_countries()
-        self.assertEqual(result, ["Afghanistan", "USA"])
-
-    def test_get_stats(self):
-        self.mock_cursor.fetchall.return_value = [
-            ("Afghanistan", date(2020, 1, 1), 100, 5),
-            ("Afghanistan", date(2020, 1, 2), 200, 10)
-        ]
-        result = self.ds.get_stats("Afghanistan", "2020-01-01", "2020-01-03")
-        self.assertEqual(result, [
-            ("Afghanistan", date(2020, 1, 1), 100, 5),
-            ("Afghanistan", date(2020, 1, 2), 200, 10)
-        ])
-
-    def test_get_all_data(self):
-        self.mock_cursor.fetchall.return_value = [
-            ("Afghanistan", date(2020, 1, 1), 100, 5),
-            ("USA", date(2020, 1, 2), 200, 10)
-        ]
-        result = self.ds.get_all_data()
-        expected = [
-            {"Country": "Afghanistan", "Date_reported": date(2020, 1, 1), "New_cases": 100, "New_deaths": 5},
-            {"Country": "USA", "Date_reported": date(2020, 1, 2), "New_cases": 200, "New_deaths": 10}
-        ]
-        self.assertEqual(result, expected)
-
-    def test_connection_failure(self):
-        """Test that sys.exit is called on connection failure."""
-        with patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("fail")), \
-             patch('sys.exit') as mock_exit:
-            datasource.DataSource()
-            mock_exit.assert_called_once()
 
 
 if __name__ == '__main__':
