@@ -5,8 +5,8 @@ This module uses unittest and unittest.mock to test database interactions by moc
 
 import unittest
 from unittest.mock import MagicMock, patch
-from ProductionCode import datasource
 from datetime import date
+from ProductionCode import datasource
 
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
@@ -16,7 +16,6 @@ class TestDataSource(unittest.TestCase):
         patcher = patch('ProductionCode.datasource.psycopg2.connect')
         self.addCleanup(patcher.stop)  # Ensures patcher is stopped after test
         self.mock_connect = patcher.start()
-        
         self.mock_conn = MagicMock()
         self.mock_cursor = self.mock_conn.cursor.return_value
         self.mock_connect.return_value = self.mock_conn
