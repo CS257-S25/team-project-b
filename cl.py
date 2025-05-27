@@ -23,11 +23,11 @@ def handle_stats(country, beginning_date, ending_date):
     """Handles the stats command for one country"""
     cases, deaths, actual_start, actual_end =covid_stats.get_cases_and_deaths_stats(country,
                                             beginning_date, ending_date)
-    if cases is None:
+    if cases is None or deaths is None:
         print(f"No data found for {country} in the given date range.")
     else:
         print(f"""Total cases in {country} from {actual_start} to {actual_end}: {cases}
-Total deaths in {country} from {actual_start} to {actual_end}: {deaths}""")
+    Total deaths in {country} from {actual_start} to {actual_end}: {deaths}""")
 
 def command(args):
     """Dispatches based on command line args"""
