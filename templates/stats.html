@@ -19,7 +19,13 @@
     <header>
         <h2>View COVID-19 Stats by Country</h2>
         <p>Select a country and date range to view total cases and deaths.</p>
+        
     </header>
+    {% if error %}
+        <section class="error">
+            <p style="color: red;">{{ error }}</p>
+        </section>
+    {% endif %}
 
    <section>
     <form method="post">
