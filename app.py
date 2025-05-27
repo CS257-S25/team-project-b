@@ -36,6 +36,14 @@ def stats():
             note = (f"Showing data from {actual_start} to {actual_end} "
                     "(closest available dates).")
 
+        # Get daily stats for the chart
+        daily_stats = ds.get_stats(country, actual_start, actual_end)
+        chart_data = {
+            "dates": [row[1].strftime("%Y-%m-%d") for row in daily_stats],
+            "cases": [row[2] for row in daily_stats],
+            "deaths": [row[3] for row in daily_stats],
+        }
+
         return render_template(
             'stats.html',
             countries=countries,
@@ -44,7 +52,8 @@ def stats():
             end=actual_end,
             cases=total_cases,
             deaths=total_deaths,
-            note=note
+            note=note,
+            chart_data=chart_data
         )
 
     return render_template('stats.html', countries=countries)
