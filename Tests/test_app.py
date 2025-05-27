@@ -1,5 +1,7 @@
+"""Unit tests for Flask app routes and logic using mock dependencies."""
+
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from app import app
 
 class TestApp(unittest.TestCase):
@@ -29,20 +31,20 @@ class TestApp(unittest.TestCase):
         self.assertIn('Page not found', response.get_data(as_text=True))
 
     @patch('app.DataSource')
-    def test_stats_get(self, MockDataSource):
+    def test_stats_get(self, mock_data_source):
         """Test GET /stats returns page with mocked countries list"""
-        mock_ds = MockDataSource.return_value
+        mock_ds = mock_data_source.return_value
         mock_ds.get_all_countries.return_value = ['CountryA', 'CountryB']
-        
+
         response = self.client.get('/stats')
         self.assertEqual(response.status_code, 200)
         self.assertIn('CountryA', response.get_data(as_text=True))
 
     @patch('app.covid_stats.get_cases_and_deaths_stats')
     @patch('app.DataSource')
-    def test_stats_post_valid(self, MockDataSource, mock_stats_func):
+    def test_stats_post_valid(self, mock_data_source, mock_stats_func):
         """Test POST /stats with valid country and dates"""
-        mock_ds = MockDataSource.return_value
+        mock_ds = mock_data_source.return_value
         mock_ds.get_all_countries.return_value = ['CountryA']
         mock_stats_func.return_value = (100, 5, '2020-01-01', '2020-01-02')
 
@@ -61,9 +63,9 @@ class TestApp(unittest.TestCase):
 
     @patch('app.covid_stats.get_cases_and_deaths_stats')
     @patch('app.DataSource')
-    def test_stats_post_no_data(self, MockDataSource, mock_stats_func):
+    def test_stats_post_no_data(self, mock_data_source, mock_stats_func):
         """Test POST /stats when no data is returned"""
-        mock_ds = MockDataSource.return_value
+        mock_ds = mock_data_source.return_value
         mock_ds.get_all_countries.return_value = ['CountryA']
         mock_stats_func.return_value = (None, None, None, None)
 
@@ -78,9 +80,9 @@ class TestApp(unittest.TestCase):
 
     @patch('app.covid_stats.compare')
     @patch('app.DataSource')
-    def test_compare_post(self, MockDataSource, mock_compare_func):
+    def test_compare_post(self, mock_data_source, mock_compare_func):
         """Test POST /compare with valid countries and week"""
-        mock_ds = MockDataSource.return_value
+        mock_ds = mock_data_source.return_value
         mock_ds.get_all_countries.return_value = ['CountryA', 'CountryB']
         mock_compare_func.return_value = (
             "Comparison results",
@@ -100,9 +102,9 @@ class TestApp(unittest.TestCase):
         self.assertIn('5', html)
 
     @patch('app.DataSource')
-    def test_compare_get(self, MockDataSource):
+    def test_compare_get(self, mock_data_source):
         """Test GET /compare returns countries list"""
-        mock_ds = MockDataSource.return_value
+        mock_ds = mock_data_source.return_value
         mock_ds.get_all_countries.return_value = ['CountryA', 'CountryB']
 
         response = self.client.get('/compare')
