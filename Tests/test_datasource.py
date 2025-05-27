@@ -1,17 +1,26 @@
+"""Unit tests for the DataSource class in ProductionCode.datasource.
+
+This module uses unittest and unittest.mock to test database interactions by mocking psycopg2.
+"""
+
 import unittest
 from unittest.mock import MagicMock, patch
-from datetime import date
 from ProductionCode import datasource
+from datetime import date
 
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
 
-    @patch('ProductionCode.datasource.psycopg2.connect')
-    def setUp(self, mock_connect):
+    def setUp(self):
         """Set up the mock database connection and cursor for each test."""
+        patcher = patch('ProductionCode.datasource.psycopg2.connect')
+        self.addCleanup(patcher.stop)  # Ensures patcher is stopped after test
+        self.mock_connect = patcher.start()
+        
         self.mock_conn = MagicMock()
-        mock_connect.return_value = self.mock_conn
         self.mock_cursor = self.mock_conn.cursor.return_value
+        self.mock_connect.return_value = self.mock_conn
+
         self.ds = datasource.DataSource()
 
     def test_get_sum_between_dates(self):
