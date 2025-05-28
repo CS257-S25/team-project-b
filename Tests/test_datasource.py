@@ -158,15 +158,30 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_closest_date_result_is_none(self):
         """Test get_closest_date when fetchone returns None (covers line 78)."""
-        self.mock_cursor.fetchone.return_value = None # Simulate no date found
+        self.mock_cursor.fetchone.return_value = None
         result = self.ds.get_closest_date("Neverland", "2023-01-01")
-        self.assertIsNone(result) # Covers the 'else None' part when 'result' is None
+        self.assertIsNone(result)
 
     def test_get_closest_date_result_tuple_contains_none(self):
         """Test get_closest_date when fetchone returns (None,) (covers line 78)."""
-        self.mock_cursor.fetchone.return_value = (None,) # Simulate date value in tuple is None
+        self.mock_cursor.fetchone.return_value = (None,) 
         result = self.ds.get_closest_date("Oz", "2023-01-01")
-        self.assertIsNone(result) # Covers the 'else None' part when 'result[0]' is None
+        self.assertIsNone(result)
+
+    @patch('ProductionCode.datasource.sys.exit')
+    @patch('ProductionCode.datasource.psycopg2.connect')
+    def test_connection_failure_operational_error(self, mock_psycopg2_connect_local, mock_sys_exit):
+        """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
+        error_message = "Simulated DB connection error for testing"
+        mock_psycopg2_connect_local.side_effect = datasource.psycopg2.OperationalError(error_message)
+        with self.assertRaises(SystemExit):
+            datasource.DataSource()
+        mock_psycopg2_connect_local.assert_called_once()
+        expected_exit_message = (
+            f"Unable to connect to the database. Error: {error_message}. "
+            "Please check your connection settings."
+        )
+        mock_sys_exit.assert_called_once_with(expected_exit_message)
 
 if __name__ == '__main__':
     unittest.main()
