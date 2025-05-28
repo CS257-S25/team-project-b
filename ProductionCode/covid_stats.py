@@ -1,6 +1,7 @@
 """COVID-19 statistics functions."""
 
 from datetime import datetime, date
+from ProductionCode.datasource import DataSource
 
 def to_date(date_str):
     """Convert a string to a date object."""
