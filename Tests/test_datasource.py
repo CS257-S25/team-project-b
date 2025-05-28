@@ -36,6 +36,17 @@ class TestDataSource(unittest.TestCase):
         with self.assertRaises(IndexError):
             self.ds.get_all_data()
 
+    def test_get_closest_date_none(self):
+        self.mock_cursor.fetchone.return_value = None
+        result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
+        self.assertIsNone(result)
+
+    def test_get_sum_specific_none(self):
+        self.mock_cursor.fetchone.return_value = None
+        result = self.ds.get_sum_specific("Afghanistan", "2020-01-05")
+        self.assertIsNone(result)
+
+
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
         self.mock_cursor.fetchone.return_value = (100, 5)
