@@ -151,20 +151,24 @@ class TestDataSource(unittest.TestCase):
     @patch('ProductionCode.datasource.psycopg2.connect')
     def test_get_week_country_and_new_cases(self, mock_connect):
         mock_conn = mock_connect.return_value
+        # Mock the context manager for cursor
         mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
         mock_cursor.fetchall.return_value = [(100,)]
         ds = datasource.DataSource()
-        result = ds.get_week_country_and_new_cases("USA", "2021-01-01")   
+        result = ds.get_week_country_and_new_cases("USA", "2021-01-01")
         self.assertEqual(result, [(100,)])
+        mock_cursor.execute.assert_called()  # Ensure SQL was executed
 
     @patch('ProductionCode.datasource.psycopg2.connect')
     def test_get_week_country_and_new_deaths(self, mock_connect):
         mock_conn = mock_connect.return_value
+        # Mock the context manager for cursor
         mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
         mock_cursor.fetchall.return_value = [(10,)]
         ds = datasource.DataSource()
         result = ds.get_week_country_and_new_deaths("USA", "2021-01-01")
         self.assertEqual(result, [(10,)])
+        mock_cursor.execute.assert_called()  # Ensure SQL was executed
 
 if __name__ == '__main__':
     unittest.main()
