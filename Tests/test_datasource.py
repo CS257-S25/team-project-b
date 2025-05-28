@@ -148,19 +148,19 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
 
-    @patch('ProductionCode.datasource.psycopg2.connect')
+    @patch('ProductionCode.datasource.DataSource.connect') #This is new
     def test_get_week_country_and_new_cases(self, mock_connect):
         mock_conn = mock_connect.return_value
-        mock_cursor = mock_conn.cursor.return_value
+        mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
         mock_cursor.fetchall.return_value = [(100,)]
         ds = datasource.DataSource()
         result = ds.get_week_country_and_new_cases("USA", "2021-01-01")   
         self.assertEqual(result, [(100,)])
 
-    @patch('ProductionCode.datasource.psycopg2.connect')
+    @patch('ProductionCode.datasource.DataSource.connect') #This is new
     def test_get_week_country_and_new_deaths(self, mock_connect):
         mock_conn = mock_connect.return_value
-        mock_cursor = mock_conn.cursor.return_value
+        mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
         mock_cursor.fetchall.return_value = [(10,)]
         ds = datasource.DataSource()
         result = ds.get_week_country_and_new_deaths("USA", "2021-01-01")
