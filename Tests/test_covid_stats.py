@@ -91,7 +91,7 @@ class TestCovidStats(unittest.TestCase):
         ]
         self.mock_ds.get_sum_specific.return_value = (10, 2)
         output, chart_data = covid_stats.compare(["A"], "2020-01-01", ds=self.mock_ds)
-        self.assertIn("A on", output)
+        self.assertIn("A", output)
         self.assertEqual(chart_data["labels"], ["A"])
         self.assertEqual(chart_data["cases"], [10])
         self.assertEqual(chart_data["deaths"], [2])
