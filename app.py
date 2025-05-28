@@ -21,10 +21,10 @@ def stats():
         country = request.form.get('country')
         beginning_date = request.form.get('beginning_date')
         ending_date = request.form.get('ending_date')
-
-        total_cases, total_deaths, actual_start, actual_end = covid_stats.get_cases_and_deaths_stats(
+        stats_result = covid_stats.get_cases_and_deaths_stats(
             country, beginning_date, ending_date, ds=ds
         )
+        total_cases, total_deaths, actual_start, actual_end = stats_result
 
         if total_cases is None:
             error = f"No data found for {country} near the dates you selected."
