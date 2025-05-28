@@ -44,17 +44,15 @@ class TestDataSource(unittest.TestCase):
         )
         self.mock_cursor.close.assert_called_once()
 
-    @patch("ProductionCode.datasource.psycopg2.connect")
-    def test_get_closest_date(self, mock_connect):
-        mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = (date(2020, 1, 1),)
-        mock_conn = MagicMock()
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
-        mock_connect.return_value = mock_conn
-        ds = datasource.DataSource()
-        result = ds.get_closest_date("US", date(2020, 1, 5))
+    def test_get_closest_date(self):
+        """Test get_closest_date with a mocked date return."""
+        self.mock_cursor.fetchone.return_value = (date(2020, 1, 1),)
+        result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
         self.assertEqual(result, date(2020, 1, 1))
-
+        self.mock_cursor.execute.assert_called_with(
+            unittest.mock.ANY, ("Afghanistan", "2020-01-05")
+        )
+        self.mock_cursor.close.assert_called_once()
 
     def test_get_week_country_and_new_case(self):
         """Test get_week_country_and_new_cases with mocked data."""
@@ -92,35 +90,24 @@ class TestDataSource(unittest.TestCase):
         )
         self.mock_cursor.close.assert_called_once()
 
-        @patch("ProductionCode.datasource.psycopg2.connect")
-        def test_get_stats(self, mock_connect):
-            mock_cursor = MagicMock()
-            mock_cursor.fetchall.return_value = [
-                ('US', date(2020, 3, 1), 100, 5, 8)
-            ]
-            mock_conn = MagicMock()
-            mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
-            mock_connect.return_value = mock_conn
-            ds = datasource.DataSource()
-            result = ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 7))
-            expected = [('US', date(2020, 3, 1), 100, 5, 8)]
-            self.assertEqual(result, expected)
-
-        @patch("ProductionCode.datasource.psycopg2.connect")
-        def test_get_all_data(self, mock_connect):
-            mock_cursor = MagicMock()
-            mock_cursor.fetchall.return_value = [
-                {'Country': 'Country1', 'Date_reported': date(2020, 1, 1), 'New_cases': 100, 'New_deaths': 5},
-                {'Country': 'Country2', 'Date_reported': date(2020, 1, 2), 'New_cases': 200, 'New_deaths': 10}
-            ]
-            mock_conn = MagicMock()
-            mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
-            mock_connect.return_value = mock_conn
-            ds = datasource.DataSource()
-            result = ds.get_all_data()
-            expected_data = mock_cursor.fetchall.return_value
-            self.assertEqual(result, expected_data)
-
+    def test_get_stats(self):
+        """Test get_stats returning a list of detailed stats tuples."""
+        self.mock_cursor.fetchall.return_value = [
+            ("US", date(2020, 3, 1), 100, 5),
+            ("US", date(2020, 3, 2), 150, 8)
+        ]
+        result = self.ds.get_stats(
+            "US", date(2020, 3, 1), date(2020, 3, 3)
+        )
+        expected = [
+            ("US", date(2020, 3, 1), 100, 5),
+            ("US", date(2020, 3, 2), 150, 8)
+        ]
+        self.assertEqual(result, expected)
+        self.mock_cursor.execute.assert_called_with(
+            unittest.mock.ANY, ("US", date(2020, 3, 1), date(2020, 3, 3))
+        )
+        self.mock_cursor.close.assert_called_once()
 
     def test_get_all_data(self):
         """Test get_all_data returning a list of dictionaries."""
