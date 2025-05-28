@@ -34,6 +34,7 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, [(None, None, None, None)])
 
     def test_get_all_data_invalid_row(self):
+        """Test get_all_data when the fetched data contains an invalid row."""
         self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
         with self.assertRaises(IndexError):
             self.ds.get_all_data()
@@ -172,7 +173,7 @@ class TestDataSource(unittest.TestCase):
 
     @patch('ProductionCode.datasource.sys.exit')
     @patch('ProductionCode.datasource.psycopg2.connect')
-    def test_connection_failure_operational_error(self, mock_psycopg2_connect_local, mock_sys_exit):
+    def test_connection_failure_operational_error(self, mock_psycopg2_connect_local):
         """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
         error_message = "Simulated DB connection error for testing"
         mock_psycopg2_connect_local.side_effect = (
