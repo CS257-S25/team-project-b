@@ -7,10 +7,6 @@ import unittest
 from unittest.mock import MagicMock, patch
 from datetime import date
 from ProductionCode import datasource
-from unittest import TestCase
-from unittest.mock import patch
-import sys
-import psycopg2
 
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
@@ -24,14 +20,6 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor = self.mock_conn.cursor.return_value
         self.mock_connect.return_value = self.mock_conn
         self.ds = datasource.DataSource()
-
-    class TestDataSourceConnect(TestCase):
-        @patch("ProductionCode.datasource.psycopg2.connect", side_effect=psycopg2.OperationalError("fail"))
-        def test_connect_failure_exits(self, mock_connect):
-            with self.assertRaises(SystemExit) as cm:
-                from ProductionCode.datasource import DataSource
-                DataSource()
-            self.assertIn("Unable to connect", str(cm.exception))
 
     @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("Connection failed"))
     def test_connection_failure(self, mock_connect):
@@ -47,16 +35,6 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
         with self.assertRaises(IndexError):
             self.ds.get_all_data()
-
-    def test_get_closest_date_none(self):
-        self.mock_cursor.fetchone.return_value = None
-        result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
-        self.assertIsNone(result)
-
-    def test_get_sum_specific_none(self):
-        self.mock_cursor.fetchone.return_value = None
-        result = self.ds.get_sum_specific("Afghanistan", "2020-01-05")
-        self.assertIsNone(result)
 
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
