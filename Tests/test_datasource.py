@@ -102,11 +102,29 @@ class TestDataSource(unittest.TestCase):
         )
         self.mock_cursor.close.assert_called_once()
 
+    def test_get_stats(self):
+        """Test get_stats returning a list of detailed stats tuples."""
+        self.mock_cursor.fetchall.return_value = [
+            ("US", date(2020, 3, 1), 100, 5),
+            ("US", date(2020, 3, 2), 150, 8)
+        ]
+        result = self.ds.get_stats(
+            "US", date(2020, 3, 1), date(2020, 3, 3)
+        )
+        expected = [
+            ("US", date(2020, 3, 1), 100, 5),
+            ("US", date(2020, 3, 2), 150, 8)
+        ]
+        self.assertEqual(result, expected)
+        self.mock_cursor.execute.assert_called_with(
+            unittest.mock.ANY, ("US", date(2020, 3, 1), date(2020, 3, 3))
+        )
+        self.mock_cursor.close.assert_called_once()
+
     def test_get_stats_empty(self):
         self.mock_cursor.fetchall.return_value = []
         result = self.ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 3))
         self.assertEqual(result, [])
-
 
     def test_get_all_data(self):
         """Test get_all_data returning a list of dictionaries."""
