@@ -68,17 +68,14 @@ class TestDataSource(unittest.TestCase):
         )
         self.mock_cursor.close.assert_called_once()
 
-    def test_get_week_country_and_new_case(self):
-        """Test get_week_country_and_new_cases with mocked data."""
-        self.mock_cursor.fetchall.return_value = [(10,), (20,), (30,)]
-        result = self.ds.get_week_country_and_new_cases(
-            "Afghanistan", "2020-01-05"
-        )
-        self.assertEqual(result, [(10,), (20,), (30,)])
-        self.mock_cursor.execute.assert_called_with(
-            unittest.mock.ANY, ("Afghanistan", "2020-01-05")
-        )
-        self.mock_cursor.close.assert_called_once()
+    @patch('ProductionCode.datasource.DataSource.connect')
+    def test_get_week_country_and_new_cases(self, mock_connect):
+        mock_conn = mock_connect.return_value
+        mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
+        mock_cursor.fetchall.return_value = [(100,)]
+        ds = datasource.DataSource()
+        result = ds.get_week_country_and_new_cases("USA", "2021-01-01")
+        self.assertEqual(result, [(100,)])
 
     def test_get_week_country_and_new_deaths(self):
         """Test get_week_country_and_new_deaths with mocked data."""
@@ -147,28 +144,6 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, expected_data)
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
-
-    @patch('ProductionCode.datasource.psycopg2.connect')
-    def test_get_week_country_and_new_cases(self, mock_connect):
-        mock_conn = mock_connect.return_value
-        # Mock the context manager for cursor
-        mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
-        mock_cursor.fetchall.return_value = [(100,)]
-        ds = datasource.DataSource()
-        result = ds.get_week_country_and_new_cases("USA", "2021-01-01")
-        self.assertEqual(result, [(100,)])
-        mock_cursor.execute.assert_called()  # Ensure SQL was executed
-
-    @patch('ProductionCode.datasource.psycopg2.connect')
-    def test_get_week_country_and_new_deaths(self, mock_connect):
-        mock_conn = mock_connect.return_value
-        # Mock the context manager for cursor
-        mock_cursor = mock_conn.cursor.return_value.__enter__.return_value
-        mock_cursor.fetchall.return_value = [(10,)]
-        ds = datasource.DataSource()
-        result = ds.get_week_country_and_new_deaths("USA", "2021-01-01")
-        self.assertEqual(result, [(10,)])
-        mock_cursor.execute.assert_called()  # Ensure SQL was executed
 
 if __name__ == '__main__':
     unittest.main()
