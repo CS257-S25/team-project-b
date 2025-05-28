@@ -21,7 +21,7 @@ class TestDataSource(unittest.TestCase):
         self.mock_connect.return_value = self.mock_conn
         self.ds = datasource.DataSource()
 
-    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("Connection failed"))
+    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception)
     def test_connection_failure(self, side_effect):
         """Test the behavior when the database connection fails during initialization."""
         with self.assertRaises(side_effect):
