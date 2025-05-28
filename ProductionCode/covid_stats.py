@@ -1,7 +1,7 @@
 """Provides core COVID-19 statistics functions."""
 
-from .datasource import DataSource
 from datetime import datetime, date
+from ProductionCode.datasource import DataSource
 
 def to_date(date_str):
     """Convert a string to a date object."""
@@ -9,8 +9,8 @@ def to_date(date_str):
         return date_str
     try:
         return datetime.strptime(date_str, "%Y-%m-%d").date()
-    except ValueError:
-        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.")
+    except ValueError as exc:
+        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.") from exc
 
 def get_closest_date(target_date, country, before=True, ds=None):
     """Find the closest available date for a country."""
@@ -39,7 +39,6 @@ def get_closest_date(target_date, country, before=True, ds=None):
 def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
     """Return total cases, deaths, and adjusted dates for a country."""
     if ds is None:
-        from ProductionCode.datasource import DataSource
         ds = DataSource()
 
     start = get_closest_date(start_date, country, before=False, ds=ds)
@@ -80,7 +79,7 @@ def compare(countries, week, ds=None):
             if total_cases == 0 and total_deaths == 0:
                 output += f"{country} on {actual_date}: No cases or deaths.\n\n"
             else:
-                output += f"{country} on {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"
+                output += f"{country} {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"
         else:
             output += f"{country}: No data available on or after {week}.\n\n"
 

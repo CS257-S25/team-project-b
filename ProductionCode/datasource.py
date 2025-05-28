@@ -114,6 +114,7 @@ class DataSource:
             return [row[0] for row in cursor.fetchall()]
 
     def get_stats(self, country, beginning_date, ending_date):
+        """Returns COVID data for a specific country between two dates."""
         with self.connection.cursor() as cursor:
             cursor.execute("""
                 SELECT c.country_name, d.report_date, cd.cases, cd.deaths
@@ -125,7 +126,6 @@ class DataSource:
                 AND d.report_date <= %s  -- Fixed: <= not <
             """, (country, beginning_date, ending_date))
             return cursor.fetchall()
-
 
     def get_all_data(self):
         """Returns all COVID data including country and report date."""
