@@ -7,19 +7,6 @@ import unittest
 from unittest.mock import MagicMock, patch
 from datetime import date
 from ProductionCode import datasource
-import unittest
-from unittest.mock import patch
-import psycopg2
-import sys
-from ProductionCode.datasource import DataSource
-
-class TestDataSource(unittest.TestCase):
-
-    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=psycopg2.OperationalError("Connection failed"))
-    def test_connect_failure_exits(self, mock_connect):
-        with self.assertRaises(SystemExit) as cm:
-            DataSource()
-        self.assertIn("Unable to connect to the database", str(cm.exception))
 
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
@@ -157,6 +144,29 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, expected_data)
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
+
+    def test_get_closest_date_after_found(self):
+        """Test get_closest_date with before=False and a date is found (covers line 78)."""
+        expected_date = date(2020, 1, 10)
+        self.mock_cursor.fetchone.return_value = (expected_date,)
+        result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=False)
+        self.assertEqual(result, expected_date)
+        self.mock_cursor.execute.assert_called_with(
+            unittest.mock.stringmatching.StringMatching(r"SELECT MIN\(d.report_date\)"), # Check for MIN
+            ("Afghanistan", "2020-01-05")
+        )
+
+    def test_get_closest_date_result_is_none(self):
+        """Test get_closest_date when fetchone returns None (covers line 78)."""
+        self.mock_cursor.fetchone.return_value = None # Simulate no date found
+        result = self.ds.get_closest_date("Neverland", "2023-01-01")
+        self.assertIsNone(result) # Covers the 'else None' part when 'result' is None
+
+    def test_get_closest_date_result_tuple_contains_none(self):
+        """Test get_closest_date when fetchone returns (None,) (covers line 78)."""
+        self.mock_cursor.fetchone.return_value = (None,) # Simulate date value in tuple is None
+        result = self.ds.get_closest_date("Oz", "2023-01-01")
+        self.assertIsNone(result) # Covers the 'else None' part when 'result[0]' is None
 
 if __name__ == '__main__':
     unittest.main()
