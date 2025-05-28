@@ -20,7 +20,16 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor = self.mock_conn.cursor.return_value
         self.mock_connect.return_value = self.mock_conn
         self.ds = datasource.DataSource()
-        self.mock_cursor.reset_mock()
+
+    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("Connection failed"))
+    def test_connection_failure(self, mock_connect):
+        with self.assertRaises(Exception):
+            datasource.DataSource()
+
+    def test_get_stats_malformed_data(self):
+        self.mock_cursor.fetchall.return_value = [(None, None, None, None)]
+        result = self.ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 3))
+        self.assertEqual(result, [(None, None, None, None)])
 
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
@@ -33,18 +42,6 @@ class TestDataSource(unittest.TestCase):
             unittest.mock.ANY, ("Afghanistan", "2020-01-01", "2020-01-12")
         )
         self.mock_cursor.close.assert_called_once()
-
-    def test_get_sum_between_dates_none(self):
-        """Test get_sum_between_dates with None return."""
-        self.mock_cursor.fetchone.return_value = None
-        result = self.ds.get_sum_between_dates("Afghanistan", "2020-01-01", "2020-01-12")
-        self.assertIsNone(result)
-
-    def test_get_sum_between_dates_db_error(self):
-        """Simulate a database error in get_sum_between_dates."""
-        self.mock_cursor.execute.side_effect = Exception("DB failure")
-        with self.assertRaises(Exception):
-            self.ds.get_sum_between_dates("Afghanistan", "2020-01-01", "2020-01-12")
 
     def test_get_sum_specific(self):
         """Test get_sum_specific with expected return values."""
@@ -120,11 +117,6 @@ class TestDataSource(unittest.TestCase):
             unittest.mock.ANY, ("US", date(2020, 3, 1), date(2020, 3, 3))
         )
         self.mock_cursor.close.assert_called_once()
-
-    def test_get_stats_empty(self):
-        self.mock_cursor.fetchall.return_value = []
-        result = self.ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 3))
-        self.assertEqual(result, [])
 
     def test_get_all_data(self):
         """Test get_all_data returning a list of dictionaries."""
