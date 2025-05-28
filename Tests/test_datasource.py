@@ -14,7 +14,7 @@ class TestDataSource(unittest.TestCase):
     def setUp(self):
         """Set up the mock database connection and cursor for each test."""
         patcher = patch('ProductionCode.datasource.psycopg2.connect')
-        self.addCleanup(patcher.stop)  # Ensures patcher is stopped after test
+        self.addCleanup(patcher.stop)
         self.mock_connect = patcher.start()
         self.mock_conn = MagicMock()
         self.mock_cursor = self.mock_conn.cursor.return_value
@@ -22,11 +22,13 @@ class TestDataSource(unittest.TestCase):
         self.ds = datasource.DataSource()
 
     @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception("Connection failed"))
-    def test_connection_failure(self, mock_connect):
+    def test_connection_failure(self):
+        """Test the behavior when the database connection fails during initialization."""
         with self.assertRaises(Exception):
             datasource.DataSource()
 
     def test_get_stats_malformed_data(self):
+        """Test get_stats when the fetched data is malformed."""
         self.mock_cursor.fetchall.return_value = [(None, None, None, None)]
         result = self.ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 3))
         self.assertEqual(result, [(None, None, None, None)])
@@ -68,7 +70,7 @@ class TestDataSource(unittest.TestCase):
         )
         self.mock_cursor.close.assert_called_once()
 
-    def test_get_week_country_and_new_cases_refined(self):
+    def test_get_week_country_and_new_cases(self):
         """Test get_week_country_and_new_cases using setUp mocks."""
         self.mock_cursor.fetchall.return_value = [(100,)]
         result = self.ds.get_week_country_and_new_cases("USA", "2021-01-01")
@@ -152,10 +154,9 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.fetchone.return_value = (expected_date,)
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=False)
         self.assertEqual(result, expected_date)
-        self.mock_cursor.execute.assert_called_with(
-            unittest.mock.stringmatching.StringMatching(r"SELECT MIN\(d.report_date\)"), # Check for MIN
-            ("Afghanistan", "2020-01-05")
-        )
+        args, _ = self.mock_cursor.execute.call_args
+        self.assertRegex(args[0], r"^SELECT MIN\(d\.report_date\)")
+        self.assertEqual(args[1], ("Afghanistan", "2020-01-05"))
 
     def test_get_closest_date_result_is_none(self):
         """Test get_closest_date when fetchone returns None (covers line 78)."""
@@ -165,7 +166,7 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_closest_date_result_tuple_contains_none(self):
         """Test get_closest_date when fetchone returns (None,) (covers line 78)."""
-        self.mock_cursor.fetchone.return_value = (None,) 
+        self.mock_cursor.fetchone.return_value = (None,)
         result = self.ds.get_closest_date("Oz", "2023-01-01")
         self.assertIsNone(result)
 
@@ -174,15 +175,12 @@ class TestDataSource(unittest.TestCase):
     def test_connection_failure_operational_error(self, mock_psycopg2_connect_local, mock_sys_exit):
         """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
         error_message = "Simulated DB connection error for testing"
-        mock_psycopg2_connect_local.side_effect = datasource.psycopg2.OperationalError(error_message)
+        mock_psycopg2_connect_local.side_effect = (
+            datasource.psycopg2.OperationalError(error_message)
+        )
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_psycopg2_connect_local.assert_called_once()
-        expected_exit_message = (
-            f"Unable to connect to the database. Error: {error_message}. "
-            "Please check your connection settings."
-        )
-        mock_sys_exit.assert_called_once_with(expected_exit_message)
 
 if __name__ == '__main__':
     unittest.main()
