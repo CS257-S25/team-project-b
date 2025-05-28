@@ -24,7 +24,7 @@ class TestDataSource(unittest.TestCase):
     @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception)
     def test_connection_failure(self, side_effect):
         """Test the behavior when the database connection fails during initialization."""
-        with self.assertRaises(side_effect):
+        with self.assertRaises(Exception):
             datasource.DataSource()
 
     def test_get_stats_malformed_data(self):
