@@ -79,7 +79,6 @@ class TestCovidStats(unittest.TestCase):
 
     def test_get_cases_and_deaths_stats_exception(self):
         """Test get_cases_and_deaths_stats when the data source raises an exception."""
-        #self.mock_ds.get_all_data.side_effect = KeyError("mock error")
         result = covid_stats.get_cases_and_deaths_stats(
             "X", "2020-01-01", "2020-01-10", ds=self.mock_ds
         )
