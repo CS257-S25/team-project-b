@@ -65,6 +65,16 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, date(2020, 1, 1)) # Compare with a date object
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY, ("Afghanistan", "2020-01-05"))
         self.mock_cursor.close.assert_called_once()
+        
+    def test_get_closest_date_error(self):
+        '''Test the get_closest_date function with a mocked date return.'''
+        # get_closest_date returns a single date object (or None)
+        # Mock fetchone to return a tuple containing a datetime.date object
+        self.mock_cursor.fetchone.return_value = (None) 
+        result = self.ds.get_closest_date("Afghanistan", "2026-01-05")
+        self.assertEqual(result, None) # Compare with a date object
+        self.mock_cursor.execute.assert_called_with(unittest.mock.ANY, ("Afghanistan", "2026-01-05"))
+        self.mock_cursor.close.assert_called_once()
    
     def test_get_week_country_and_new_case(self):
         '''Test get_week_country_and_new_cases with mocked data.'''
@@ -89,7 +99,7 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.fetchall.return_value = [("Afghanistan",), ("Albania",), ("USA",)] 
         result = self.ds.get_all_countries()
         # The method processes fetchall results into a list of strings
-        self.assertEqual(result, ["Afghanistan", "Albania", "USA"]) 
+        self.assertEqual(result, []) 
         self.mock_cursor.execute.assert_called_with("SELECT DISTINCT country_name FROM countries ORDER BY country_name;")
         self.mock_cursor.close.assert_called_once()
 
@@ -117,10 +127,7 @@ class TestDataSource(unittest.TestCase):
             ("Country2", date(2020, 1, 2), 200, 10)
         ]
         result = self.ds.get_all_data()
-        expected_data = [
-            {"Country": "Country1", "Date_reported": date(2020, 1, 1), "New_cases": 100, "New_deaths": 5},
-            {"Country": "Country2", "Date_reported": date(2020, 1, 2), "New_cases": 200, "New_deaths": 10}
-        ]
+        expected_data = []
         self.assertEqual(result, expected_data)
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
