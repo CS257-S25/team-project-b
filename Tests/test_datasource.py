@@ -31,6 +31,11 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_stats("US", date(2020, 3, 1), date(2020, 3, 3))
         self.assertEqual(result, [(None, None, None, None)])
 
+    def test_get_all_data_invalid_row(self):
+        self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
+        with self.assertRaises(IndexError):
+            self.ds.get_all_data()
+
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
         self.mock_cursor.fetchone.return_value = (100, 5)
