@@ -7,6 +7,19 @@ import unittest
 from unittest.mock import MagicMock, patch
 from datetime import date
 from ProductionCode import datasource
+import unittest
+from unittest.mock import patch
+import psycopg2
+import sys
+from ProductionCode.datasource import DataSource
+
+class TestDataSource(unittest.TestCase):
+
+    @patch('ProductionCode.datasource.psycopg2.connect', side_effect=psycopg2.OperationalError("Connection failed"))
+    def test_connect_failure_exits(self, mock_connect):
+        with self.assertRaises(SystemExit) as cm:
+            DataSource()
+        self.assertIn("Unable to connect to the database", str(cm.exception))
 
 class TestDataSource(unittest.TestCase):
     """Unit tests for the DataSource module, mocking PostgreSQL interactions."""
