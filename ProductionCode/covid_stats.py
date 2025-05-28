@@ -1,6 +1,5 @@
-"""Provides core COVID-19 statistics functions."""
+"""COVID-19 statistics functions."""
 
-from .datasource import DataSource
 from datetime import datetime, date
 
 def to_date(date_str):
@@ -9,56 +8,50 @@ def to_date(date_str):
         return date_str
     try:
         return datetime.strptime(date_str, "%Y-%m-%d").date()
-    except ValueError:
-        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.")
+    except ValueError as exc:
+        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.") from exc
 
 def get_closest_date(target_date, country, before=True, ds=None):
-    """Find the closest available date for a country."""
+    """Return the closest available date for a given country and direction."""
     if ds is None:
-        ds = DataSource()
+        raise ValueError("A DataSource instance must be provided to get_closest_date().")
 
     data = ds.get_all_data()
     target_date = to_date(target_date)
     dates = []
 
     for row in data:
-        if row["Country"] == country:
-            row_date = row["Date_reported"]
-            if isinstance(row_date, datetime):
-                row_date = row_date.date()
-            if before and row_date <= target_date:
-                dates.append(row_date)
-            elif not before and row_date >= target_date:
-                dates.append(row_date)
+        if row["Country"] != country:
+            continue
+
+        row_date = row["Date_reported"]
+        if isinstance(row_date, datetime):
+            row_date = row_date.date()
+
+        if (before and row_date <= target_date) or (not before and row_date >= target_date):
+            dates.append(row_date)
 
     if not dates:
         return None
 
     return max(dates) if before else min(dates)
 
-def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
+def get_cases_and_deaths_stats(country, beginning_date, ending_date, ds):
     """Return total cases, deaths, and adjusted dates for a country."""
-    if ds is None:
-        from ProductionCode.datasource import DataSource
-        ds = DataSource()
+    start_date = get_closest_date(beginning_date, country, before=False, ds=ds)
+    end_date = get_closest_date(ending_date, country, before=True, ds=ds)
 
-    start = get_closest_date(start_date, country, before=False, ds=ds)
-    end = get_closest_date(end_date, country, before=True, ds=ds)
-
-    if not start or not end:
+    if not start_date or not end_date:
         return None, None, None, None
 
-    result = ds.get_sum_between_dates(country, start, end)  # singular
+    result = ds.get_sum_between_dates(country, start_date, end_date)
     total_cases = result[0] or 0
     total_deaths = result[1] or 0
 
-    return total_cases, total_deaths, start, end
+    return total_cases, total_deaths, start_date, end_date
 
-def compare(countries, week, ds=None):
-    """Compare total cases and deaths for each country on a given week."""
-    if ds is None:
-        ds = DataSource()
-
+def compare(countries, week, ds):
+    """Compare total cases and deaths for each country in a selected week."""
     output = ""
     week_date = to_date(week)
 
