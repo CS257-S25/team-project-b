@@ -19,8 +19,8 @@ class TestDataSource(unittest.TestCase):
         self.mock_conn = MagicMock()
         self.mock_cursor = self.mock_conn.cursor.return_value
         self.mock_connect.return_value = self.mock_conn
-
         self.ds = datasource.DataSource()
+        self.mock_cursor.reset_mock()
 
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
@@ -33,6 +33,18 @@ class TestDataSource(unittest.TestCase):
             unittest.mock.ANY, ("Afghanistan", "2020-01-01", "2020-01-12")
         )
         self.mock_cursor.close.assert_called_once()
+
+    def test_get_sum_between_dates_none(self):
+        """Test get_sum_between_dates with None return."""
+        self.mock_cursor.fetchone.return_value = None
+        result = self.ds.get_sum_between_dates("Afghanistan", "2020-01-01", "2020-01-12")
+        self.assertIsNone(result)
+
+    def test_get_sum_between_dates_db_error(self):
+        """Simulate a database error in get_sum_between_dates."""
+        self.mock_cursor.execute.side_effect = Exception("DB failure")
+        with self.assertRaises(Exception):
+            self.ds.get_sum_between_dates("Afghanistan", "2020-01-01", "2020-01-12")
 
     def test_get_sum_specific(self):
         """Test get_sum_specific with expected return values."""
