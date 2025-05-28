@@ -46,6 +46,15 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_sum_specific("Afghanistan", "2020-01-05")
         self.assertIsNone(result)
 
+    def test_get_sum_specific_valid(self):
+        self.mock_cursor.fetchone.return_value = (123, 4)
+        result = self.ds.get_sum_specific("Afghanistan", "2020-01-03")
+        self.assertEqual(result, (123, 4))
+
+    def test_get_sum_specific_none(self):
+        self.mock_cursor.fetchone.return_value = None
+        result = self.ds.get_sum_specific("Afghanistan", "2020-01-03")
+        self.assertIsNone(result)
 
     def test_get_sum_between_dates(self):
         """Test get_sum_between_dates with expected return values."""
