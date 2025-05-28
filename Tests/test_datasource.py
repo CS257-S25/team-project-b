@@ -106,8 +106,29 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, expected)
         self.mock_cursor.execute.assert_called_with(
             unittest.mock.ANY, ("US", date(2020, 3, 1), date(2020, 3, 3))
+        ) # This part of the test is new
+        self.assertEqual(result, [
+            ("US", date(2020, 3, 1), 100, 5),
+            ("US", date(2020, 3, 2), 150, 8)
+        ])
+        self.mock_cursor.execute.assert_called_with(
+            unittest.mock.ANY, ("US", date(2020, 3, 1), date(2020, 3, 3))
         )
         self.mock_cursor.close.assert_called_once()
+
+        def test_get_all_data(self): #This is a new test
+            """Test get_all_data returns a list of dictionaries with COVID data."""
+            self.mock_cursor.fetchall.return_value = [
+                ("US", date(2020, 3, 1), 100, 5),
+                ("US", date(2020, 3, 2), 150, 8)
+            ]
+            expected = [
+                {"Country": "US", "Date_reported": date(2020, 3, 1), "New_cases": 100, "New_deaths": 5},
+                {"Country": "US", "Date_reported": date(2020, 3, 2), "New_cases": 150, "New_deaths": 8}
+            ]
+            result = self.ds.get_all_data()
+            self.assertEqual(result, expected)
+            self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
 
     def test_get_all_data(self):
         """Test get_all_data returning a list of dictionaries."""
