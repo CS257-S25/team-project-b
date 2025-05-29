@@ -114,12 +114,16 @@ footer {
 form {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 10px;
 }
+
 select {
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
 }
+
 
 /*----------------------------- Help Section --------------------------------*/
 /*.help ul {
@@ -146,7 +150,11 @@ body {
     background-color: #f4f6f8;
     color: #333;
 }
-
+section {
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
 a {
     text-decoration: none;
     color: inherit;
