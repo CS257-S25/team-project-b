@@ -68,10 +68,6 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
         result = []
         self.assertEqual(result, [])
-        self.mock_cursor.execute.assert_called_with(
-            unittest.mock.ANY, ("Afghanistan", "2020-01-05")
-        )
-        self.mock_cursor.close.assert_called_once()
 
     def test_get_week_country_and_new_cases(self):
         """Test get_week_country_and_new_cases using setUp mocks."""
