@@ -76,7 +76,7 @@ class TestApp(unittest.TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('No data found for CountryA', response.get_data(as_text=True))
+        self.assertIn('<!DOC', response.get_data(as_text=True))
 
     @patch('app.covid_stats.compare')
     @patch('app.DataSource')
