@@ -114,14 +114,11 @@ footer {
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
 }
-
 select {
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
+    padding: 10px;
+    border-radius: 4px;
 }
 
 /*----------------------------- Help Section --------------------------------*/
