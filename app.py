@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
+    """Homepage route that renders the main page."""
     return render_template('index.html')
 
 @app.route('/stats', methods=['GET', 'POST'])
