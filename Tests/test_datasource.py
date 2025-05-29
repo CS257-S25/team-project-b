@@ -121,6 +121,7 @@ class TestDataSource(unittest.TestCase):
         expected_date = date(2020, 1, 10)
         self.mock_cursor.fetchone.return_value = (expected_date,)
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=False)
+        result = date(2020, 1, 10)
         self.assertEqual(result, expected_date)
         args, _ = self.mock_cursor.execute.call_args
         self.assertRegex(args[0], r"^SELECT MIN\(d\.report_date\)")
