@@ -157,12 +157,15 @@ body {
 }
 
 a {
-    text-decoration: underline;
+    text-decoration: none;
     color: inherit;
-    color: #1e3a5f;
+    
 }
 
-
+.source-a {
+    color: #1e3a5f;
+    text-decoration: underline;
+}
 h1, h2, h3, h4 {
     margin: 0;
 }
@@ -210,6 +213,7 @@ nav a:hover {
     border-radius: 0 0 10px 10px;
 }
 .stats-header {
+    padding: 32px;
     text-align: center;
     padding: 4rem 2rem;
     border-radius: 0 0 10px 10px;
