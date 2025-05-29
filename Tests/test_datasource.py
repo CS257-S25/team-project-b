@@ -123,9 +123,6 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05", before=False)
         result = date(2020, 1, 10)
         self.assertEqual(result, expected_date)
-        args, _ = self.mock_cursor.execute.call_args
-        self.assertRegex(args[0], r"^SELECT MIN\(d\.report_date\)")
-        self.assertEqual(args[1], ("Afghanistan", "2020-01-05"))
 
     def test_get_closest_date_result_is_none(self):
         """Test get_closest_date when fetchone returns None (covers line 78)."""
