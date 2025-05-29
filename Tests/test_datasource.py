@@ -6,6 +6,7 @@ This module uses unittest and unittest.mock to test database interactions by moc
 import unittest
 from unittest.mock import MagicMock, patch
 from datetime import date
+import psycopg2
 from ProductionCode import datasource
 
 class TestDataSource(unittest.TestCase):
@@ -133,15 +134,14 @@ class TestDataSource(unittest.TestCase):
     @patch('ProductionCode.datasource.sys.exit', side_effect=SystemExit)
     def test_connection_failure_operational_error(self, mock_sys_exit, mock_connect):
         """Test connection failure due to OperationalError."""
-        error_message = "Simulated DB connection error for testing"
-        mock_connect.side_effect = datasource.psycopg2.OperationalError(error_message)
+        error_message = "Simulated DB connection error for testing."
+        mock_connect.side_effect = psycopg2.OperationalError(error_message)
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
-        mock_sys_exit.assert_called_once_with(
-            f"""Unable to connect to the database. Error:
-            {error_message}. Please check your connection settings."""
-        )
+        expected_error_message = f"""Unable to connect to the database. Error:
+            {error_message} Please check your connection settings."""
+        mock_sys_exit.assert_called_once_with(expected_error_message.replace('\n            ', '\n'))
 
 if __name__ == '__main__':
     unittest.main()
