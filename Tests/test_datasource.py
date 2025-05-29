@@ -95,8 +95,8 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_all_countries(self):
         """Test get_all_countries returning a list of country names."""
-        self.mock_cursor.ds.get_all_countries.return_value = [
-            "Afghanistan", "Albania", "USA"
+        self.mock_cursor.fetchall.return_value = [
+            ("Afghanistan",), ("Albania",), ("USA",)
         ]
         result = self.ds.get_all_countries()
         self.assertEqual(result, ["Afghanistan", "Albania", "USA"])
