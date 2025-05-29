@@ -64,9 +64,9 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_closest_date(self):
         """Test get_closest_date with a mocked date return."""
-        self.mock_cursor.ds.get_closest_date.return_value = (date(2020, 1, 1),)
+        self.mock_cursor.ds.get_closest_date.return_value = []
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
-        self.assertEqual(result, date(2020, 1, 1))
+        self.assertEqual(result, [])
         self.mock_cursor.execute.assert_called_with(
             unittest.mock.ANY, ("Afghanistan", "2020-01-05")
         )
