@@ -171,12 +171,11 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_closest_date("Oz", "2023-01-01")
         self.assertIsNone(result)
 
-    @patch('ProductionCode.datasource.sys.exit', side_effect=SystemExit)
     @patch('ProductionCode.datasource.psycopg2.connect')
+    @patch('ProductionCode.datasource.sys.exit', side_effect=SystemExit)
     def test_connection_failure_operational_error(self, mock_sys_exit, mock_connect):
-        """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
         error_message = "Simulated DB connection error for testing"
-        mock_connect.sisde_effect = datasource.psycopg2.OperationalError(error_message)
+        mock_connect.side_effect = datasource.psycopg2.OperationalError(error_message)
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
