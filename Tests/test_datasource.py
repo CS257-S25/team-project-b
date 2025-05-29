@@ -139,9 +139,9 @@ class TestDataSource(unittest.TestCase):
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
-        expected_error_message = f"""Unable to connect to the database. Error:
+        expected_error_message = f"""Unable to connect to the database. Error:\n
             {error_message} Please check your connection settings."""
-        mock_sys_exit.assert_called_once_with(expected_error_message.replace('\n            ', '\n'))
+        mock_sys_exit.assert_called_once_with(expected_error_message.replace('\n           ', '\n'))
 
 if __name__ == '__main__':
     unittest.main()
