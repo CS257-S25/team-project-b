@@ -42,13 +42,13 @@
     </section>
 
     {% if result %}
-    <section class="box">
+    <section class="box-results">
         <h3>Results for {{ week }}</h3>
         <pre>{{ result }}</pre>
     </section>
 
     {% if chart_data %}
-    <section>
+    <section class="chart">
         <canvas id="covidChart" width="600" height="300"></canvas>
         <script>
             const ctx = document.getElementById('covidChart').getContext('2d');

@@ -264,6 +264,16 @@ nav a:hover {
     margin-top: 1rem;
     font-size: 0.9rem;
 }
+.box-chart {
+   padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+box-result {
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
 
 
 /* Features */
