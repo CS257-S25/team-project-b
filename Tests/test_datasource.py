@@ -24,7 +24,8 @@ class TestDataSource(unittest.TestCase):
     @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception)
     def test_connection_failure(self, side_effect):
         """Test the behavior when the database connection fails during initialization."""
-        with self.assertRaises(Exception):
+        side_effect = Exception
+        with self.assertRaises(side_effect):
             datasource.DataSource()
 
     def test_get_stats_malformed_data(self):
@@ -38,7 +39,8 @@ class TestDataSource(unittest.TestCase):
     def test_get_all_data_invalid_row(self, side_effect):
         """Test get_all_data when the fetched data contains an invalid row."""
         self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
-        with self.assertRaises(IndexError):
+        side_effect = IndexError
+        with self.assertRaises(side_effect):
             self.ds.get_all_data()
 
     def test_get_sum_between_dates(self):
