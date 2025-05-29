@@ -22,19 +22,17 @@ def get_closest_date(target_date, country, before=True, ds=None):
     dates = []
 
     for row in data:
-        if row["Country"] == country:
-            row_date = row["Date_reported"]
-            if isinstance(row_date, datetime):
-                row_date = row_date.date()
-            if before and row_date <= target_date:
-                dates.append(row_date)
-            elif not before and row_date >= target_date:
-                dates.append(row_date)
+        if row["Country"] != country:
+            continue
 
-    if not dates:
-        return None
+        row_date = row["Date_reported"]
+        if isinstance(row_date, datetime):
+            row_date = row_date.date()
 
-    return max(dates) if before else min(dates)
+        if (before and row_date <= target_date) or (not before and row_date >= target_date):
+            dates.append(row_date)
+
+    return max(dates) if dates and before else (min(dates) if dates else None)
 
 def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
     """Return total cases, deaths, and adjusted dates for a country."""
@@ -47,7 +45,7 @@ def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
     if not start or not end:
         return None, None, None, None
 
-    result = ds.get_sum_between_dates(country, start, end)  # singular
+    result = ds.get_sum_between_dates(country, start, end)
     total_cases = result[0] or 0
     total_deaths = result[1] or 0
 
@@ -79,9 +77,7 @@ def compare(countries, week, ds=None):
             if total_cases == 0 and total_deaths == 0:
                 output += f"{country} on {actual_date}: No cases or deaths.\n\n"
             else:
-                output += (
-                    f"{country} {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"
-                )
+                output += f"{country} on {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"
         else:
             output += f"{country}: No data available on or after {week}.\n\n"
 
