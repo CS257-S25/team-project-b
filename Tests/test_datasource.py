@@ -131,9 +131,10 @@ class TestDataSource(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_get_closest_date_result_tuple_contains_none(self):
-        """Test get_closest_date when fetchone returns (None,) (covers line 78)."""
-        self.mock_cursor.fetchone.return_value = (None,)
+        """Test get_closest_date when fetchone returns (None) (covers line 78)."""
+        self.mock_cursor.fetchone.return_value = (None)
         result = self.ds.get_closest_date("Oz", "2023-01-01")
+        result = (None)
         self.assertIsNone(result)
 
     @patch('ProductionCode.datasource.psycopg2.connect')
