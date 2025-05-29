@@ -28,7 +28,7 @@ Allows a user to display the total weekly COVID-19 cases and deaths for a chosen
 
 #### Usage: 
 To run this scenario, the user would input:
-"python3 cl.py stats Kenya 2022-01-30"
+"python3 cl.py stats Kenya 2022-01-02 2022-01-30"
 
 The output would look something like:  
 Total cases in Kenya from 2022-01-02 to 2022-01-30: 39876
