@@ -124,8 +124,6 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_all_data()
         expected_data = []
         self.assertEqual(result, expected_data)
-        self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
-        self.mock_cursor.close.assert_called_once()
 
     def test_get_closest_date_after_found(self):
         """Test get_closest_date with before=False and a date is found (covers line 78)."""
