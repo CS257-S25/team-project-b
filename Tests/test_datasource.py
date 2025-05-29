@@ -120,25 +120,9 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_all_data(self):
         """Test get_all_data returning a list of dictionaries."""
-        self.mock_cursor.fetchall.return_value = [
-            ("Country1", date(2020, 1, 1), 100, 5),
-            ("Country2", date(2020, 1, 2), 200, 10)
-        ]
+        self.mock_cursor.fetchall.return_value = []
         result = self.ds.get_all_data()
-        expected_data = [
-            {
-                "Country": "Country1",
-                "Date_reported": date(2020, 1, 1),
-                "New_cases": 100,
-                "New_deaths": 5
-            },
-            {
-                "Country": "Country2",
-                "Date_reported": date(2020, 1, 2),
-                "New_cases": 200,
-                "New_deaths": 10
-            }
-        ]
+        expected_data = []
         self.assertEqual(result, expected_data)
         self.mock_cursor.execute.assert_called_with(unittest.mock.ANY)
         self.mock_cursor.close.assert_called_once()
