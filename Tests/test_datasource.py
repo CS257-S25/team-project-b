@@ -63,14 +63,16 @@ class TestDataSource(unittest.TestCase):
         self.mock_cursor.close.assert_called_once()
 
     def test_get_closest_date(self):
-        """Test get_closest_date with a mocked date return."""
-        self.mock_cursor.ds.get_closest_date.return_value = []
+        self.mock_cursor.execute.return_value = None
+        self.mock_cursor.fetchone.return_value = None
         result = self.ds.get_closest_date("Afghanistan", "2020-01-05")
-        self.assertEqual(result, [])
-        self.mock_cursor.execute.assert_called_with(
+        self.assertIsNone(result)
+        self.mock_cursor.execute.assert_called_once_with(
             unittest.mock.ANY, ("Afghanistan", "2020-01-05")
         )
+        self.mock_cursor.fetchone.assert_called_once()
         self.mock_cursor.close.assert_called_once()
+
 
     def test_get_week_country_and_new_cases(self):
         """Test get_week_country_and_new_cases using setUp mocks."""
