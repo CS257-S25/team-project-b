@@ -6,7 +6,6 @@ This module uses unittest and unittest.mock to test database interactions by moc
 import unittest
 from unittest.mock import MagicMock, patch
 from datetime import date
-import psycopg2
 from ProductionCode import datasource
 
 class TestDataSource(unittest.TestCase):
@@ -140,8 +139,8 @@ class TestDataSource(unittest.TestCase):
             datasource.DataSource()
         mock_connect.assert_called_once()
         expected_error_message = error_message
-        mock_sys_exit.assert_called_once_with("Unable to connect to the database. Error: " + 
-                                              expected_error_message + 
+        mock_sys_exit.assert_called_once_with("Unable to connect to the database. Error: " +
+                                              expected_error_message +
                                               ". Please check your connection settings.")
 
 if __name__ == '__main__':
