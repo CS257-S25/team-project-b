@@ -270,9 +270,13 @@ nav a:hover {
     margin: 0 auto;
 }
 .box-result {
-    padding: 30px 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 32px;
+    text-align: center;
+    padding: 4rem 2rem;
+    border-radius: 0 0 10px 10px;
+    background-color: #ededed;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 
