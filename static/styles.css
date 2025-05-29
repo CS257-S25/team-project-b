@@ -272,7 +272,7 @@ nav a:hover {
 .box-result {
     padding: 32px;
     text-align: center;
-    margin: 25%;
+    margin: 0 25%;
     padding: 4rem 2rem;
     border-radius: 0 0 10px 10px;
     border-color: #000428;
