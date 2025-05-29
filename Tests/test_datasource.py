@@ -176,7 +176,7 @@ class TestDataSource(unittest.TestCase):
     def test_connection_failure_operational_error(self, mock_sys_exit, mock_connect):
         """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
         error_message = "Simulated DB connection error for testing"
-        mock_connect.sisde_effect = datasource.psycopg2.OperationalError(error_message)
+        mock_connect.side_effect = datasource.psycopg2.OperationalError(error_message)
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
