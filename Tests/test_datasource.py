@@ -180,7 +180,9 @@ class TestDataSource(unittest.TestCase):
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
-        mock_sys_exit.assert_called_once_with(f"Unable to connect to the database: .Error: {error_message}. Please check your connection settings.")
+        mock_sys_exit.assert_called_once_with(
+            f"Unable to connect to the database. Error: {error_message}. Please check your connection settings."
+        )
 
 if __name__ == '__main__':
     unittest.main()
