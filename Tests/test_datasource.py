@@ -95,9 +95,11 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_all_countries(self):
         """Test get_all_countries returning a list of country names."""
-        self.mock_cursor.fetchall.return_value = ['Afghanistan', 'Albania', 'USA']
+        self.mock_cursor.fetchall.return_value = [
+            "Afghanistan", "Albania", "USA"
+        ]
         result = self.ds.get_all_countries()
-        self.assertEqual(result, ['Afghanistan', 'Albania', 'USA'])
+        self.assertEqual(result, ["Afghanistan", "Albania", "USA"])
         self.mock_cursor.execute.assert_called_with(
             "SELECT DISTINCT country_name FROM countries ORDER BY country_name;"
         )
@@ -169,19 +171,18 @@ class TestDataSource(unittest.TestCase):
         result = self.ds.get_closest_date("Oz", "2023-01-01")
         self.assertIsNone(result)
 
+    @patch('ProductionCode.datasource.sys.exit')
     @patch('ProductionCode.datasource.psycopg2.connect')
-    @patch('ProductionCode.datasource.sys.exit', side_effect=SystemExit)
-    def test_connection_failure_operational_error(self, mock_sys_exit, mock_connect):
+    def test_connection_failure_operational_error(self, mock_psycopg2_connect_local, mock_sys_exit):
+        """Test connect() failure raises psycopg2.OperationalError and calls sys.exit."""
         error_message = "Simulated DB connection error for testing"
-        mock_connect.side_effect = datasource.psycopg2.OperationalError(error_message)
-
+        mock_psycopg2_connect_local.side_effect = (
+            datasource.psycopg2.OperationalError(error_message)
+        )
         with self.assertRaises(SystemExit):
             datasource.DataSource()
-
-        mock_connect.assert_called_once()
-        mock_sys_exit.assert_called_once_with(
-            f"Unable to connect to the database. Error: {error_message}. Please check your connection settings."
-        )
+        mock_psycopg2_connect_local.assert_called_once()
+        mock_sys_exit.assert_called_once_with(f"Database connection failed: {error_message}")
 
 if __name__ == '__main__':
     unittest.main()
