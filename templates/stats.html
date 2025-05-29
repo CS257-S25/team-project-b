@@ -7,36 +7,51 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>COVID-19 Stats</h1>
+    <nav>
+        <h1>COVID-19 Tracker</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">Help</a></li>
+        </ul>
+    </nav>
 
-    <form method="POST">
-        <label for="country">Country:</label>
-        <select name="country" id="country" required>
-            {% for c in countries %}
-                <option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>
-            {% endfor %}
-        </select>
+    <header class="stats-header">
+        <h2>Track COVID-19 Statistics by Country</h2>
+        <p>Select a country and date range to view weekly COVID-19 stats.</p>
+        <p> Date range:  2020-01-05 to 2025-03-23.</p>
+    </header>
 
-        <label for="beginning_date">Start Date:</label>
-        <input type="date" name="beginning_date" value="{{ start }}" required>
+    <section class="form-section">
+        <form method="POST" class="compare-form">
+            <label for="country">Country:</label>
+            <select name="country" id="country" required>
+                {% for c in countries %}
+                    <option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
 
-        <label for="ending_date">End Date:</label>
-        <input type="date" name="ending_date" value="{{ end }}" required>
+            <label for="beginning_date">Start Date:</label>
+            <input type="date" name="beginning_date" value="{{ start }}" required>
 
-        <button type="submit">Get Stats</button>
-    </form>
+            <label for="ending_date">End Date:</label>
+            <input type="date" name="ending_date" value="{{ end }}" required>
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% elif cases is not none %}
-        <h2>Stats for {{ country }}</h2>
+            <button type="submit" class="button">Get Stats</button>
+        </form>
+    </section>
+
+    {% if cases is not none %}
+    <section class="box-result">
+        <h3>Results for {{ country }}</h3>
         <p>Total cases: {{ cases }}</p>
         <p>Total deaths: {{ deaths }}</p>
         <p>{{ note }}</p>
+    </section>
 
-        <h3>Cases and Deaths Over Time</h3>
+    <section class="chart">
         <canvas id="countryChart" width="600" height="300"></canvas>
-
         <script>
             const ctx = document.getElementById('countryChart').getContext('2d');
             const chartData = {{ chart_data | tojson }};
@@ -61,14 +76,18 @@
                         }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0 } }
-                    }
-                }
+                options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
             });
         </script>
+    </section>
     {% endif %}
+
+    <footer>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
+    </footer>
 </body>
 </html>
+
+
+
+

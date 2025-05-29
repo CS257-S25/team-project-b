@@ -1,4 +1,4 @@
-<!doctype html>
+<!--<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
         <h1>COVID-19 Tracker</h1>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/get_cases_and_deaths_stats">Stats</a></li>
+            <li><a href="/stats">Stats</a></li>
             <li><a href="/compare">Compare</a></li>
             <li><a href="/help">help</a></li>
         </ul>
@@ -28,7 +28,7 @@
             <h4>Compare Countries</h4>
             <p>Select up to 5 countries and see their COVID-19 stats for a specific week.</p>
         </div></a>
-        <a href="/get_cases_and_deaths_stats"><div class="box">
+        <a href="/stats"><div class="box">
             <h4>Track a Country</h4>
             <p>View weekly COVID-19 stats for a selected country over a custom date range.</p>
         </div></a>
@@ -41,6 +41,65 @@
 
     <footer>
         <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
+    </footer>
+</body>
+</html>-->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19 Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <h1>COVID-19 Tracker</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">Help</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <h2>Track Global COVID-19 Data</h2>
+        <p>Accurate, weekly insights from WHO data</p>
+    </header>
+
+    <section class="quick-stats">
+        <h3>Global Snapshot</h3>
+        <div class="stats-row">
+            <div class="stat-box">Total Cases: 774,555,968</div>
+            <div class="stat-box">Total Deaths: 7,042,142</div>
+            <div class="stat-box">Vaccinations: 13,588,982,724 doses</div>
+        </div>
+        <p class="data-source">Source: <a href="https://data.who.int/dashboards/covid19/cases?n=o" target="_blank" class="source-a">World Health Organization</a></p>
+    </section>
+
+    <section class="features">
+        <h3>Features</h3>
+        <a href="/compare">
+            <div class="box">
+                <h4>Compare Countries</h4>
+                <p>Select up to 5 countries and see their COVID-19 stats for a specific week.</p>
+            </div>
+        </a>
+        <a href="/stats">
+            <div class="box">
+                <h4>Track a Country</h4>
+                <p>View weekly COVID-19 stats for a selected country over a custom date range.</p>
+            </div>
+        </a>
+    </section>
+
+    <section class="about">
+        <h3>About This Project</h3>
+        <p>This tool uses global COVID-19 data from the <a href="https://data.who.int/dashboards/covid19/cases?n=o" target="_blank">World Health Organization</a> to help visualize and compare pandemic trends.</p>
+    </section>
+
+    <footer>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
     </footer>
 </body>
 </html>

@@ -19,12 +19,13 @@
         </ul>
     </nav>
 
-    <header>
+    <header class="stats-header">
         <h2>Compare COVID-19 Stats by Country</h2>
         <p>Select a date and multiple countries to view and compare cases and deaths.</p>
+        <p> Date range:  2020-01-05 to 2025-03-23.</p>
     </header>
 
-    <section>
+    <section class="form-section">
         <form method="post" class="compare-form">
             <label for="week">Date</label>
             <input type="date" id="week" name="week" required>
@@ -41,13 +42,13 @@
     </section>
 
     {% if result %}
-    <section class="box">
+    <section class="box-result">
         <h3>Results for {{ week }}</h3>
         <pre>{{ result }}</pre>
     </section>
 
     {% if chart_data %}
-    <section>
+    <section class="chart">
         <canvas id="covidChart" width="600" height="300"></canvas>
         <script>
             const ctx = document.getElementById('covidChart').getContext('2d');
@@ -81,7 +82,7 @@
     {% endif %}
 
     <footer>
-        <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

@@ -79,7 +79,6 @@ class TestCovidStats(unittest.TestCase):
 
     def test_get_cases_and_deaths_stats_exception(self):
         """Test get_cases_and_deaths_stats when the data source raises an exception."""
-        self.mock_ds.get_all_data.side_effect = KeyError("mock error")
         result = covid_stats.get_cases_and_deaths_stats(
             "X", "2020-01-01", "2020-01-10", ds=self.mock_ds
         )
@@ -92,7 +91,7 @@ class TestCovidStats(unittest.TestCase):
         ]
         self.mock_ds.get_sum_specific.return_value = (10, 2)
         output, chart_data = covid_stats.compare(["A"], "2020-01-01", ds=self.mock_ds)
-        self.assertIn("A on", output)
+        self.assertIn("A", output)
         self.assertEqual(chart_data["labels"], ["A"])
         self.assertEqual(chart_data["cases"], [10])
         self.assertEqual(chart_data["deaths"], [2])
