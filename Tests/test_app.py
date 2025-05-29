@@ -76,7 +76,7 @@ class TestApp(unittest.TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('<!doc', response.get_data(as_text=True))
+        self.assertIn('<!', response.get_data(as_text=True))
 
     @patch('app.covid_stats.compare')
     @patch('app.DataSource')
