@@ -1,114 +1,130 @@
-
 html, body {
     height: 100%;
 }
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    color: #333;
-    height: 100%;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: #f0f2f5;
+    color: #1f1f1f;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 nav {
-    background: #fff;
-    border-bottom: 1px solid #ccc;
-    padding: 10px 20px;
+    background: #1f1f1f;
+    color: #ffffff;
+    padding: 14px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 nav h1 {
     font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 nav ul {
     list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 20px;
     margin: 0;
     padding: 0;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #333;
+    color: #e0e0e0;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+    color: #00b4d8;
 }
 
 header {
-    padding: 40px 20px;
-    background: #fff;
-    border-bottom: 1px solid #ccc;
+    padding: 60px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
     text-align: center;
 }
 
 header h2 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 2rem;
 }
 
 .button {
     display: inline-block;
     margin-top: 20px;
-    padding: 10px 20px;
-    background: #007bff;
-    color: #fff;
+    padding: 12px 24px;
+    background: #00b4d8;
+    color: #ffffff;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.3s ease;
 }
 
 .button:hover {
-    background: #0056b3;
+    background: #0077b6;
 }
 
 section {
-    padding: 20px;
-    max-width: 50%;
-    margin-left: 25%;
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 section h3 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    color: #2c2c2c;
 }
 
 .box {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 15px;
+    background: #ffffff;
+    border: none;
+    padding: 20px;
     margin-bottom: 20px;
-    border-radius: 4px;
-    color: #000000
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
 }
+
 .box:hover {
-    box-shadow: 0 2px 5px #ca6a11;
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.25);
 }
+
 footer {
-    background: #fff;
-    border-top: 1px solid #ccc;
-    padding: 10px;
+    background: #1f1f1f;
+    color: #aaaaaa;
+    padding: 16px;
     text-align: center;
     font-size: 0.9rem;
     margin-top: auto;
 }
 
-/*------------------------------------------------style for Stats------------------------------------------------------------*/
+/*----------------------------- Stats Section --------------------------------*/
 form {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-}
-select {
-    padding: 10px;
-    border-radius: 4px;
+    gap: 10px;
 }
 
-/*------------------------------------------------style for help------------------------------------------------------------*/
+select {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/*----------------------------- Help Section --------------------------------*/
 .help ul {
     list-style: none;
     padding: 0;
@@ -116,10 +132,11 @@ select {
 }
 
 .help li {
-    color: #412222;
-    font-family:Georgia, 'Times New Roman', Times, serif;
-    margin-bottom: 10px; 
-    line-height: 1.5;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    font-size: 1rem;
 }
 
 .compare-form {
