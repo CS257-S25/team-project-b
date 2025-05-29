@@ -1,4 +1,4 @@
-html, body {
+/*html, body {
     height: 100%;
 }
 
@@ -125,7 +125,7 @@ select {
 }
 
 /*----------------------------- Help Section --------------------------------*/
-.help ul {
+/*.help ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -141,4 +141,177 @@ select {
 
 .compare-form {
     width: 100%;
+}*/
+/* Reset and base styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+/* Navigation bar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e3a5f;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+
+nav h1 {
+    font-size: 1.5rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: #fff;
+    font-weight: 500;
+    transition: border-bottom 0.3s;
+}
+
+nav a:hover {
+    border-bottom: 2px solid #00bcd4;
+}
+
+/* Hero section */
+.hero {
+    background: linear-gradient(to right, #004e92, #000428);
+    color: white;
+    text-align: center;
+    padding: 4rem 2rem;
+    border-radius: 0 0 10px 10px;
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+}
+
+/* Quick stats */
+.quick-stats {
+    padding: 2rem;
+    text-align: center;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.stat-box {
+    background-color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex: 1 1 200px;
+}
+
+.stat-box h4 {
+    margin-bottom: 0.5rem;
+    color: #1e3a5f;
+}
+
+.stat-box p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.data-source {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Features */
+.features {
+    padding: 2rem;
+    background-color: #e9ecef;
+    text-align: center;
+}
+
+.feature-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.box {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1 1 250px;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.box h4 {
+    margin-bottom: 0.5rem;
+    color: #1e3a5f;
+}
+
+.box p {
+    color: #555;
+}
+
+/* About section */
+.about {
+    padding: 2rem;
+    text-align: center;
+}
+
+.about a {
+    color: #1e3a5f;
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #1e3a5f;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .stats-row, .feature-boxes {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 1rem;
+    }
 }
