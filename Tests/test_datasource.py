@@ -24,7 +24,7 @@ class TestDataSource(unittest.TestCase):
     @patch('ProductionCode.datasource.psycopg2.connect', side_effect=Exception)
     def test_connection_failure(self, side_effect):
         """Test the behavior when the database connection fails during initialization."""
-        with self.assertRaises(Exception):
+        with self.assertRaises(side_effect):
             datasource.DataSource()
 
     def test_get_stats_malformed_data(self):
@@ -38,7 +38,7 @@ class TestDataSource(unittest.TestCase):
     def test_get_all_data_invalid_row(self, side_effect):
         """Test get_all_data when the fetched data contains an invalid row."""
         self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
-        with self.assertRaises(IndexError):
+        with self.assertRaises(side_effect):
             self.ds.get_all_data()
 
     def test_get_sum_between_dates(self):
@@ -122,21 +122,23 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_closest_date_result_tuple_contains_none(self):
         """Test get_closest_date when fetchone returns (None) (covers line 78)."""
-        self.mock_cursor.fetchone.return_value = (None)
+        self.mock_cursor.fetchone.return_value = None
         result = self.ds.get_closest_date("Oz", "2023-01-01")
-        result = (None)
+        result = None
         self.assertIsNone(result)
 
     @patch('ProductionCode.datasource.psycopg2.connect')
     @patch('ProductionCode.datasource.sys.exit', side_effect=SystemExit)
     def test_connection_failure_operational_error(self, mock_sys_exit, mock_connect):
+        """Test connection failure due to OperationalError."""
         error_message = "Simulated DB connection error for testing"
         mock_connect.side_effect = datasource.psycopg2.OperationalError(error_message)
         with self.assertRaises(SystemExit):
             datasource.DataSource()
         mock_connect.assert_called_once()
         mock_sys_exit.assert_called_once_with(
-            f"Unable to connect to the database. Error: {error_message}. Please check your connection settings."
+            f"""Unable to connect to the database. Error:
+            {error_message}. Please check your connection settings."""
         )
 
 if __name__ == '__main__':
