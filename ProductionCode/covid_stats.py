@@ -77,7 +77,8 @@ def compare(countries, week, ds=None):
             if total_cases == 0 and total_deaths == 0:
                 output += f"{country} on {actual_date}: No cases or deaths.\n\n"
             else:
-                output += f"""{country} on {actual_date}: {total_cases} cases, {total_deaths} deaths.\n\n"""
+                output += f"""{country} on {actual_date}: {total_cases}"""
+                output += f""" cases, {total_deaths} deaths.\n\n"""
         else:
             output += f"{country}: No data available on or after {week}.\n\n"
 
