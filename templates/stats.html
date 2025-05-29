@@ -1,10 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>COVID-19 Statistics</title>
+    <title>COVID-19 Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav>
@@ -16,8 +15,7 @@
             <li><a href="/help">Help</a></li>
         </ul>
     </nav>
-
-    <header>
+    <header class="stats-header">
         <h2>Track COVID-19 Statistics by Country</h2>
         <p>Select a country and date range to view weekly COVID-19 stats.</p>
         <p> Date range:  2020-01-05 to 2025-03-23.</p>
@@ -83,7 +81,7 @@
     {% endif %}
 
     <footer>
-        <p>Owen Heidtke, Daniel Zhang, Fenan Gudina, Anthony Vazquez</p>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
     </footer>
 </body>
 </html>
