@@ -34,7 +34,7 @@ class TestDataSource(unittest.TestCase):
         self.assertEqual(result, [(None, None, None, None)])
 
     @patch('ProductionCode.datasource.DataSource.get_all_data', side_effect=IndexError)
-    def test_get_all_data_invalid_row(self):
+    def test_get_all_data_invalid_row(self, side_effect):
         """Test get_all_data when the fetched data contains an invalid row."""
         self.mock_cursor.fetchall.return_value = [("Country1", date(2020, 1, 1), 100)]
         with self.assertRaises(IndexError):
