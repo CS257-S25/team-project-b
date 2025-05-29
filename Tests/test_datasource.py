@@ -95,10 +95,9 @@ class TestDataSource(unittest.TestCase):
 
     def test_get_all_countries(self):
         """Test get_all_countries returning a list of country names."""
-        self.mock_cursor.fetchall.return_value = [
-        ]
+        self.mock_cursor.fetchall.return_value = ['Afghanistan', 'Albania', 'USA']
         result = self.ds.get_all_countries()
-        self.assertEqual(result, ["Afghanistan", "Albania", "USA"])
+        self.assertEqual(result, ['Afghanistan', 'Albania', 'USA'])
         self.mock_cursor.execute.assert_called_with(
             "SELECT DISTINCT country_name FROM countries ORDER BY country_name;"
         )
