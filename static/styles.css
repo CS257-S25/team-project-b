@@ -1,18 +1,3 @@
-
-/*----------------------------- Stats Section --------------------------------*/
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-select {
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-}
-/*----------------------------- Help Section --------------------------------*/
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -151,6 +136,19 @@ nav a:hover {
 }
 
 
+/*----------------------------- Stats Section --------------------------------*/
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+select {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
 /* Features */
 .features {
     padding: 2rem;
