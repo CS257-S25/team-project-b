@@ -3,6 +3,10 @@
 from datetime import datetime, date
 from ProductionCode.datasource import DataSource
 
+def get_ds(ds):
+    """Return provided DataSource or a new one if None."""
+    return ds if ds else DataSource()
+
 def to_date(date_str):
     """Convert a string to a date object."""
     if isinstance(date_str, date):
@@ -14,9 +18,7 @@ def to_date(date_str):
 
 def get_closest_date(target_date, country, before=True, ds=None):
     """Find the closest available date for a country."""
-    if ds is None:
-        ds = DataSource()
-
+    ds = get_ds(ds)
     data = ds.get_all_data()
     target_date = to_date(target_date)
     dates = []
@@ -36,9 +38,7 @@ def get_closest_date(target_date, country, before=True, ds=None):
 
 def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
     """Return total cases, deaths, and adjusted dates for a country."""
-    if ds is None:
-        ds = DataSource()
-
+    ds = get_ds(ds)
     start = get_closest_date(start_date, country, before=False, ds=ds)
     end = get_closest_date(end_date, country, before=True, ds=ds)
 
@@ -53,8 +53,7 @@ def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
 
 def compare(countries, week, ds=None):
     """Compare total cases and deaths for each country on a given week."""
-    if ds is None:
-        ds = DataSource()
+    ds = get_ds(ds)
     week_date = to_date(week)
 
     labels, cases, deaths = [], [], []
@@ -62,7 +61,7 @@ def compare(countries, week, ds=None):
 
     for country in countries:
         actual_date = get_closest_date(week_date, country, before=False, ds=ds)
-        msg, c, d = _get_country_stats(country, actual_date, week, ds)
+        msg, c, d = get_country_stats(country, actual_date, week, ds)
         output.append(msg)
         if c is not None and d is not None:
             labels.append(country)
@@ -72,7 +71,8 @@ def compare(countries, week, ds=None):
     chart_data = {"labels": labels, "cases": cases, "deaths": deaths}
     return "\n".join(output) + "\n", chart_data
 
-def _get_country_stats(country, actual_date, week, ds):
+def get_country_stats(country, actual_date, week, ds):
+    """Helper to generate one country's summary message."""
     if actual_date:
         c, d = ds.get_sum_specific(country, actual_date)
         c, d = c or 0, d or 0
