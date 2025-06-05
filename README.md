@@ -72,3 +72,6 @@ Muddling Through. We have a help page that allows the user to seek help understa
 ### Code Design Improvements
 -- Code Design Improvements -- 
 1. In ProductionCode/covid_stats.py (lines 54–85), a long method code smell was present in the compare function, which made the logic difficult to read and maintain. To address this, the method was refactored by extracting the country-specific data processing into a separate helper function, _get_country_stats(). This reduced the method's length, improved modularity, and enhanced clarity while preserving the original functionality.
+2. Issue: Repeated if ds is None: ds = DataSource() in multiple functions (get_closest_date, get_cases_and_deaths_stats, compare)
+Fix: Added a helper function get_ds(ds) at the top of covid_stats.py (around line 7) to handle default DataSource logic.
+Result: Cleaner code, less repetition, easier to maintain.
