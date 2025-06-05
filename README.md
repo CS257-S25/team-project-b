@@ -64,4 +64,9 @@ Our Website is scanable because it has a clear and concise homepage that has cle
 Satisficing. Our Website is satisficing because it allows the user to search what they want to do. We give them a list of countries for both our compare and stats methods and they can either choose or search up a country. We also provide a calendar for them to choose their date as a natural shortcut
 
 Muddling Through. We have a help page that allows the user to seek help understanding how to operate our website if they need help. We also have a lot of redunency built into our website. We tell the user which date is the earliest possible date and we also have a very minimilistic website which allows the user to muddle through on their own fairly easily. 
+
+### Project Design Improvements
+-- Front End Design Improvements -- 
+1. Usability issue was that our title/logo in the upper left corner in every page of our app looked like a home button but wasn't. Users would click on it expecting to go to the home page but that wouldn't happen, since it was just plain text. We changed the title/logo into a button that the user could press that takes them back to the home page.
+2. For each our our stats and compare pages we had a line of text that told the user the specified date range but this text was too small and every time the user would not notice and input dates that were out of this range. This issue appears on our stats and compare pages and we changed these pages to where the text indicating the range of dates to be bigger and bold so that users would notice. 
  
