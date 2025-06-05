@@ -51,44 +51,6 @@ def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
 
     return total_cases, total_deaths, start, end
 
-'''def compare(countries, week, ds=None):
-    """Compare total cases and deaths for each country on a given week."""
-    if ds is None:
-        ds = DataSource()
-
-    output = ""
-    week_date = to_date(week)
-
-    labels = []
-    cases = []
-    deaths = []
-
-    for country in countries:
-        actual_date = get_closest_date(week_date, country, before=False, ds=ds)
-        if actual_date:
-            result = ds.get_sum_specific(country, actual_date)
-            total_cases = result[0] or 0
-            total_deaths = result[1] or 0
-
-            labels.append(country)
-            cases.append(total_cases)
-            deaths.append(total_deaths)
-
-            if total_cases == 0 and total_deaths == 0:
-                output += f"{country} on {actual_date}: No cases or deaths.\n\n"
-            else:
-                output += f"""{country} on {actual_date}: {total_cases}"""
-                output += f""" cases, {total_deaths} deaths.\n\n"""
-        else:
-            output += f"{country}: No data available on or after {week}.\n\n"
-
-    chart_data = {
-        "labels": labels,
-        "cases": cases, 
-        "deaths": deaths
-    }
-
-    return output, chart_data'''
 def compare(countries, week, ds=None):
     """Compare total cases and deaths for each country on a given week."""
     if ds is None:
@@ -114,7 +76,10 @@ def _get_country_stats(country, actual_date, week, ds):
     if actual_date:
         c, d = ds.get_sum_specific(country, actual_date)
         c, d = c or 0, d or 0
-        msg = f"{country} on {actual_date}: {c} cases, {d} deaths." if c or d else f"{country} on {actual_date}: No cases or deaths."
+        msg = (
+            f"{country} on {actual_date}: {c} cases, {d} deaths."
+            if c or d
+            else f"{country} on {actual_date}: No cases or deaths."
+        )
         return msg, c, d
     return f"{country}: No data available on or after {week}.", None, None
-
