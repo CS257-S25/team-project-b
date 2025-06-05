@@ -1,0 +1,85 @@
+"""Provides core COVID-19 statistics functions."""
+
+from datetime import datetime, date
+from ProductionCode.datasource import DataSource
+
+def get_ds(ds):
+    """Return provided DataSource or a new one if None."""
+    return ds if ds else DataSource()
+
+def to_date(date_str):
+    """Convert a string to a date object."""
+    if isinstance(date_str, date):
+        return date_str
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise ValueError(f"Invalid date format: {date_str}. Expected YYYY-MM-DD.") from exc
+
+def get_closest_date(target_date, country, before=True, ds=None):
+    """Find the closest available date for a country."""
+    ds = get_ds(ds)
+    data = ds.get_all_data()
+    target_date = to_date(target_date)
+    dates = []
+
+    for row in data:
+        if row["Country"] != country:
+            continue
+
+        row_date = row["Date_reported"]
+        if isinstance(row_date, datetime):
+            row_date = row_date.date()
+
+        if (before and row_date <= target_date) or (not before and row_date >= target_date):
+            dates.append(row_date)
+
+    return max(dates) if dates and before else (min(dates) if dates else None)
+
+def get_cases_and_deaths_stats(country, start_date, end_date, ds=None):
+    """Return total cases, deaths, and adjusted dates for a country."""
+    ds = get_ds(ds)
+    start = get_closest_date(start_date, country, before=False, ds=ds)
+    end = get_closest_date(end_date, country, before=True, ds=ds)
+
+    if not start or not end:
+        return None, None, None, None
+
+    result = ds.get_sum_between_dates(country, start, end)
+    total_cases = result[0] or 0
+    total_deaths = result[1] or 0
+
+    return total_cases, total_deaths, start, end
+
+def compare(countries, week, ds=None):
+    """Compare total cases and deaths for each country on a given week."""
+    ds = get_ds(ds)
+    week_date = to_date(week)
+
+    labels, cases, deaths = [], [], []
+    output = []
+
+    for country in countries:
+        actual_date = get_closest_date(week_date, country, before=False, ds=ds)
+        msg, c, d = get_country_stats(country, actual_date, week, ds)
+        output.append(msg)
+        if c is not None and d is not None:
+            labels.append(country)
+            cases.append(c)
+            deaths.append(d)
+
+    chart_data = {"labels": labels, "cases": cases, "deaths": deaths}
+    return "\n".join(output) + "\n", chart_data
+
+def get_country_stats(country, actual_date, week, ds):
+    """Helper to generate one country's summary message."""
+    if actual_date:
+        c, d = ds.get_sum_specific(country, actual_date)
+        c, d = c or 0, d or 0
+        msg = (
+            f"{country} on {actual_date}: {c} cases, {d} deaths."
+            if c or d
+            else f"{country} on {actual_date}: No cases or deaths."
+        )
+        return msg, c, d
+    return f"{country}: No data available on or after {week}.", None, None
