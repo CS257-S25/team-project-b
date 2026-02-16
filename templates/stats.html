@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19 Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav>
+        <h1><a href="/">COVID-19 Tracker</a></h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">Help</a></li>
+        </ul>
+    </nav>
+
+    <header class="stats-header">
+        <h2>Track COVID-19 Statistics by Country Stats</h2>
+        <p>Select a country and date range to view weekly COVID-19 stats.</p>
+        <p style="font-size: 30px;"><strong>Date range:  2020-01-05 to 2025-03-23.</strong></p>
+    </header>
+
+    <section class="form-section">
+        <form method="POST" class="compare-form">
+            <label for="country">Country:</label>
+            <select name="country" id="country" required>
+                {% for c in countries %}
+                    <option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="beginning_date">Start Date:</label>
+            <input type="date" name="beginning_date" value="{{ start }}" required>
+
+            <label for="ending_date">End Date:</label>
+            <input type="date" name="ending_date" value="{{ end }}" required>
+
+            <button type="submit" class="button">Get Stats</button>
+        </form>
+    </section>
+
+    {% if cases is not none %}
+    <section class="box-result">
+        <h3>Results for {{ country }}</h3>
+        <p>Total cases: {{ cases }}</p>
+        <p>Total deaths: {{ deaths }}</p>
+        <p>{{ note }}</p>
+    </section>
+
+    <section class="chart">
+        <canvas id="countryChart" width="600" height="300"></canvas>
+        <script>
+            const ctx = document.getElementById('countryChart').getContext('2d');
+            const chartData = {{ chart_data | tojson }};
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.dates,
+                    datasets: [
+                        {
+                            label: 'Cases',
+                            data: chartData.cases,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true
+                        },
+                        {
+                            label: 'Deaths',
+                            data: chartData.deaths,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        </script>
+    </section>
+    {% endif %}
+
+    <footer>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
+    </footer>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Help - COVID-19 Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <h1><a href="/">COVID-19 Tracker</a></h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/stats">Stats</a></li>
+            <li><a href="/compare">Compare</a></li>
+            <li><a href="/help">Help</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <h2>Need Help?</h2>
+    </header>
+
+    <section class="stats-header">
+        <h3>How to Use This Site</h3>
+            <p><strong>Stats:</strong> Select a country and a date range to view total COVID-19 cases and deaths.</p>
+            <p><strong>Compare:</strong> Choose multiple countries and a specific date to compare their case and death counts.</p>
+            <p>Use the calendar input to select valid dates.</p>
+            <p>If you see 0 cases and deaths, it may mean no data is available for that selection.</p>
+    </section>
+
+    <footer>
+        <p>COVID-19 Tracker | Created by Owen, Daniel, Fenan, Anthony</p>
+    </footer>
+</body>
+</html>
